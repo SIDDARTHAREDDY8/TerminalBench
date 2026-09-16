@@ -1,0 +1,7 @@
+scratch/
+jobs/
+*.mcap
+*.pcd
+*.ply
+!tasks/**/tests/reference/*.ply
+__pycache__/
