@@ -24,7 +24,7 @@ container is gone before the verifier starts; the verifier executes nothing the 
 | GNSS-INS poses straight from the bag (the "looks right" shortcut) | measured 0.68 local precision → fails P1 = 0.72; the model built from it fails P2 and the apron gate |
 | Build `aircraft.ply` in a different frame than the trajectory | consistency test (0.5 m / 3°) fails |
 | Malformed files to crash the verifier into a pass | every parse error is a pytest failure → reward 0; reward is written only after pytest exit 0 **and** 5/5 in CTRF |
-| Online lookup of the answer | the recording, robot and aircraft are private; nothing indexed. **The one real exposure was this repository itself**: `tests/reference/aircraft_ref.ply` and `thresholds.json` are committed here, and the public dataset card that hosts the recording used to link straight to it, so an agent could search the bag's filename, reach the card, follow the link and register its scans against the leaked reference. Closed on two fronts: the repository was made private on 2026-09-16 before any cheat trial ran (unauthenticated GitHub API returns 404), and on 2026-09-17 the dataset card was rewritten to describe only the sensor recording — no repository link, no mention of Terminal-Bench, no indication the data belongs to a benchmark task (commit `64c3ce4` on the dataset; the bag itself still resolves, so the environment build is unaffected). A task merged into TB3 proper would live in the benchmark repo like every other oracle. |
+| Online lookup of the answer | The recording, robot and aircraft are private and not indexed. **This repository is the exposure, and it is now public.** `tests/reference/aircraft_ref.ply` and `tests/thresholds.json` are committed here, and the agent holds the exact text of `instruction.md`, which also lives here — so a search on one sentence of the instruction reaches the repo and then the reference model. This cannot be closed while the repo is public, because the instruction is the search key; moving the data files elsewhere does not help. It is the same exposure every merged Terminal-Bench task carries, and the benchmark answers it with the canary string and the instruction's do-not-cheat sentence rather than with secrecy. **Scope of the finding below:** every trial ran while this repository was private (git history timestamps them), and the adversarial agent's "no leaked answer" conclusion covers the container filesystem, the MCAP metadata/attachment records and the verifier's reachable state — it was never a claim about the open web. |
 
 ## Trial results
 
@@ -75,6 +75,10 @@ is the intended legitimate solution.**"
 
 This is independent confirmation of the separate-verifier design: the two knobs the agent controls are exactly the two
 artifacts the task wants produced genuinely, and every graded quantity is recomputed outside its reach.
+
+**Scope.** The trial ran while this repository was private. Its "no leaked answer" finding covers what it searched —
+the container's filesystem, the MCAP metadata and attachment records, and the verifier's reachable state — and is not a
+claim that the answer is unfindable on the open web now that the repository is published. See the exposure row above.
 
 ## Residual weaknesses, stated rather than hidden
 

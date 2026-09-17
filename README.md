@@ -35,6 +35,7 @@ tell "looks like a jet" from "passes".
 
 ```
 tasks/aircraft-orbit-mapping/   the TB3 task (task.toml, instruction.md, README.md, environment/, solution/, tests/)
+LICENSE                         MIT for this work; third-party components keep their own licenses
 CHECKS.md                       commands + results of every CI check (static, build, oracle, nop, rubric)
 RESULTS.md                      agent / cheat trial commands, configs and reward table
 CHEAT_ANALYSIS.md               attack-surface analysis and /cheat trial outcomes
@@ -69,13 +70,31 @@ The recording (2.92 GB) is not committed; `environment/Dockerfile` downloads it 
 the public dataset https://huggingface.co/datasets/pinkman9/aircraft-orbit-mapping and verifies its
 SHA-256 (`docs/data_provenance.md`).
 
-## Repository visibility
+## Repository visibility and what publishing it means
 
-This repository is **private** and must stay private until the assessment has been reviewed. `tests/reference/aircraft_ref.ply`
-(the hidden ground-truth model) and `tests/thresholds.json` are committed here, so making it public would hand any agent with
-internet access the answer. The public dataset card that hosts the recording previously linked back here; it was rewritten on
-2026-09-17 to describe only the sensor data, with no repository link and no indication the recording belongs to a benchmark
-task. See `CHEAT_ANALYSIS.md`.
+This repository is public, which is the same posture as every task merged into Terminal-Bench: the benchmark repo
+carries each task's `tests/` and `solution/` directories in the open, and its contributing guide asks only that
+solutions not be "easily findable online (besides oracle solutions in this repo)". Publishing has a consequence worth
+stating plainly rather than leaving a reader to discover it.
+
+`tests/reference/aircraft_ref.ply` (the ground-truth model the verifier scores against) and `tests/thresholds.json`
+(the gates) are committed here. An agent solving the task receives the exact text of `instruction.md`, which also lives
+here, so a web search on one sentence of it reaches this repository, and from there the reference model. Registering
+raw scans against that model would produce a passing trajectory without doing the work. That exposure cannot be
+engineered away while the repository is public: moving the data files elsewhere does not help, because the instruction
+itself is the search key. Terminal-Bench addresses this with the canary string (an anti-training-contamination marker,
+present in every task file here) and the closing "do not cheat by using online solutions" sentence in the instruction,
+not with secrecy.
+
+**Every trial recorded in `RESULTS.md` was run while this repository was private**, and the git history timestamps that:
+the trials completed on 2026-09-16 and 2026-09-17, before publication. They therefore measure the task's intrinsic
+difficulty, not its resistance to a web search. Anyone re-running trials against the published repository should expect
+different behaviour from an agent that chooses to search, and the adversarial finding in `CHEAT_ANALYSIS.md` is scoped
+to what it actually tested — the container's filesystem, the recording's own metadata records, and the verifier's
+reachable state — not to the open web.
+
+The dataset hosting the recording was also rewritten on 2026-09-17 so its card describes only the sensor data, with no
+link back here and no indication the recording belongs to a benchmark task.
 
 ## Known limitations
 
