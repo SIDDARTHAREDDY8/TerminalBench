@@ -1,0 +1,112 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.16, pytest-9.1.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.5.2
+collected 5 items
+
+test_outputs.py .FF..                                                    [100%]
+
+=================================== FAILURES ===================================
+_____________________________ test_reaccumulation ______________________________
+
+reaccumulated = array([[-37.7027805 ,  13.65207252,   6.67125924],
+       [-37.99535219,  13.83314591,   6.85482147],
+       [-38.9622...,   1.38130812],
+       [-55.7686547 ,  -0.40555022,   1.48840345],
+       [-55.97901227,  -0.54304299,   1.49877093]])
+reacc_alignment = AlignResult(transform=array([[-9.98123244e-01, -6.10336973e-02,  4.98766834e-03,
+        -3.97663615e+01],
+       [ 6.....00000000e+00,  0.00000000e+00,
+         1.00000000e+00]]), fitness=0.6004466666666667, inlier_rmse=0.0730524399480049)
+reference = array([[-2.81791997, 14.76920033,  7.44430017],
+       [-2.83640003, 14.79740047,  7.51938009],
+       [-2.85228992, 1...2109985,  1.93651998],
+       [25.99699974, 14.69200039,  1.67340004],
+       [26.01490021, 14.74330044,  1.85388005]])
+thresholds = {'calibrated': True, 'tau_local_m': 0.1, 'tau_coverage_m': 0.2, 'junk_radius_m': 1.0, ...}
+
+    def test_reaccumulation(reaccumulated, reacc_alignment, reference, thresholds):
+        """The trajectory is metric and drift-free: raw keyframes transformed by the
+        agent's interpolated poses, globally registered to the reference (yaw sweep
+        + ICP), reach local precision >= P1 and coverage >= C1.  Local precision is,
+        among the re-accumulated points within ``junk_radius_m`` (1 m) of the
+        reference, the fraction within ``tau_local_m`` (0.10 m) of it -- a smeared
+        trajectory thickens every surface and lowers it; coverage is the fraction of
+        reference points within ``tau_coverage_m`` (0.20 m) of the re-accumulation.
+        The junk fraction (points > 1 m from the reference, driven by the keyframe
+        crop rather than the trajectory) is reported but not gated here."""
+        aligned = vl.transform_points(reacc_alignment.transform, reaccumulated)
+        m = vl.cloud_metrics(aligned, reference, thresholds["tau_local_m"], thresholds["tau_coverage_m"], thresholds["junk_radius_m"])
+        _report("test_reaccumulation", localprec=m.localprec, coverage=m.coverage, junk=m.junk, n_points=m.n_src,
+                n_near_reference=m.n_near, icp_fitness=reacc_alignment.fitness, icp_rmse=reacc_alignment.inlier_rmse)
+>       assert m.localprec >= thresholds["P1"], (
+            f"re-accumulation local precision@{thresholds['tau_local_m']} = {m.localprec:.3f} < P1 = {thresholds['P1']}")
+E       AssertionError: re-accumulation local precision@0.1 = 0.707 < P1 = 0.72
+E       assert 0.7073571570701078 >= 0.72
+E        +  where 0.7073571570701078 = Metrics(localprec=0.7073571570701078, coverage=0.9920371338912134, junk=0.315576829957227, n_src=396512, n_near=271382, n_ref=76480).localprec
+
+test_outputs.py:142: AssertionError
+----------------------------- Captured stdout call -----------------------------
+[test_reaccumulation] {"localprec": 0.7074, "coverage": 0.992, "junk": 0.3156, "n_points": 396512, "n_near_reference": 271382, "icp_fitness": 0.6004, "icp_rmse": 0.0731}
+_____________________________ test_aircraft_model ______________________________
+
+aircraft = array([[-66.58206177,  11.6218996 ,   1.26499617],
+       [-66.57564545,  11.60779953,   1.3051312 ],
+       [-66.5745...,   6.29745007],
+       [-39.13743973,  13.69136143,   6.31233454],
+       [-39.13288116,  13.69370747,   6.34235048]])
+aircraft_alignment = AlignResult(transform=array([[-9.98199472e-01, -5.98052210e-02,  4.59879935e-03,
+        -3.97867675e+01],
+       [ 5....00000000e+00,  0.00000000e+00,
+         1.00000000e+00]]), fitness=0.8773266666666667, inlier_rmse=0.06474688709976759)
+reference = array([[-2.81791997, 14.76920033,  7.44430017],
+       [-2.83640003, 14.79740047,  7.51938009],
+       [-2.85228992, 1...2109985,  1.93651998],
+       [25.99699974, 14.69200039,  1.67340004],
+       [26.01490021, 14.74330044,  1.85388005]])
+thresholds = {'calibrated': True, 'tau_local_m': 0.1, 'tau_coverage_m': 0.2, 'junk_radius_m': 1.0, ...}
+
+    def test_aircraft_model(aircraft, aircraft_alignment, reference, thresholds):
+        """aircraft.ply, globally registered to the reference, reaches local
+        precision >= P2 (sharp, unsmeared surfaces: among its points within 1 m of
+        the reference, the fraction within ``tau_local_m`` of it), coverage >= C2
+        (the whole aircraft is present: fraction of reference points within
+        ``tau_coverage_m`` of the model) and a junk fraction <= ``junk_max`` (points
+        farther than ``junk_radius_m`` from the reference -- blocks garbage volumes
+        such as the whole apron)."""
+        aligned = vl.transform_points(aircraft_alignment.transform, aircraft)
+        m = vl.cloud_metrics(aligned, reference, thresholds["tau_local_m"], thresholds["tau_coverage_m"], thresholds["junk_radius_m"])
+        _report("test_aircraft_model", localprec=m.localprec, coverage=m.coverage, junk=m.junk, n_points=m.n_src,
+                n_near_reference=m.n_near, icp_fitness=aircraft_alignment.fitness, icp_rmse=aircraft_alignment.inlier_rmse)
+        assert m.junk <= thresholds["junk_max"], (
+            f"{m.junk:.1%} of aircraft.ply is farther than {thresholds['junk_radius_m']} m from the reference "
+            f"(max {thresholds['junk_max']:.0%})")
+        assert m.localprec >= thresholds["P2"], (
+            f"aircraft.ply local precision@{thresholds['tau_local_m']} = {m.localprec:.3f} < P2 = {thresholds['P2']}")
+>       assert m.coverage >= thresholds["C2"], (
+            f"aircraft.ply coverage@{thresholds['tau_coverage_m']} = {m.coverage:.3f} < C2 = {thresholds['C2']}")
+E       AssertionError: aircraft.ply coverage@0.2 = 0.878 < C2 = 0.9
+E       assert 0.8779157949790795 >= 0.9
+E        +  where 0.8779157949790795 = Metrics(localprec=0.833277892355798, coverage=0.8779157949790795, junk=0.04836639008965593, n_src=284309, n_near=270558, n_ref=76480).coverage
+
+test_outputs.py:165: AssertionError
+----------------------------- Captured stdout call -----------------------------
+[test_aircraft_model] {"localprec": 0.8333, "coverage": 0.8779, "junk": 0.0484, "n_points": 284309, "n_near_reference": 270558, "icp_fitness": 0.8773, "icp_rmse": 0.0647}
+==================================== PASSES ====================================
+__________________________________ test_files __________________________________
+----------------------------- Captured stdout call -----------------------------
+[test_files] {"n_poses": 1462, "n_points": 284309, "traj_t0": 1775076638.1011, "traj_t1": 1775076784.2022, "n_keyframes": 100, "keyframe_stamp_coverage": 1.0}
+_______________________________ test_consistency _______________________________
+----------------------------- Captured stdout call -----------------------------
+[test_consistency] {"centroid_disagreement_m": 0.0067, "heading_disagreement_deg": 0.0747, "raw_centroid_offset_m": 2.2294}
+_______________________________ test_cleanliness _______________________________
+----------------------------- Captured stdout call -----------------------------
+[test_cleanliness] {"ground_fraction": 0.0, "n_points": 284309}
+=========================== short test summary info ============================
+PASSED test_outputs.py::test_files
+PASSED test_outputs.py::test_consistency
+PASSED test_outputs.py::test_cleanliness
+FAILED test_outputs.py::test_reaccumulation - AssertionError: re-accumulation...
+FAILED test_outputs.py::test_aircraft_model - AssertionError: aircraft.ply co...
+=================== 2 failed, 3 passed in 191.03s (0:03:11) ====================
+verifier: FAIL (pytest status 1, ctrf_ok 0; reward 0)

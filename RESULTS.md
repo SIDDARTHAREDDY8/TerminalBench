@@ -30,7 +30,8 @@ harbor analyze jobs/run-claude-N -m sonnet -r ../tb3/docs/prompts/trial-analysis
 |---|---|---|---|---|---|
 | run-claude-1rerun | claude-code / opus-5 max (GCP VM, docker backend) | **0** | agent ~2 h 12 m, harbor-scored, 0 errors | 3/5 | trajectory localprec 0.705 (gate 0.72); model precision 0.817 — the sharpest model of any trial — but coverage 0.880 misses the 0.90 gate |
 | run-claude-1 *(Modal, superseded)* | claude-code / opus-5 max | 0 (hand-scored) | agent ~2 h 05 m | 4/5 | trajectory 0.7138, model 0.760 / 0.970. Harbor never scored it (Modal spend cap); kept as evidence, **not counted** |
-| run-claude-2 | claude-code / opus-5 max | **0** | agent ~2 h; verifier re-run locally | 4/5 (trajectory test fails) | trajectory localprec 0.689 (gate 0.72); model 0.722 / 0.968, junk 0.06, apron 0.0 %; 1.25 M points |
+| run-claude-2rerun | claude-code / opus-5 max (GCP VM, docker backend) | **0** | agent ~1 h 55 m, harbor-scored, 0 errors | 3/5 | trajectory localprec 0.707 (gate 0.72); model precision 0.833 (sharpest of all trials) but coverage 0.878 misses the 0.90 gate |
+| run-claude-2 *(Modal, superseded)* | claude-code / opus-5 max | 0 (hand-scored) | agent ~2 h | 4/5 | trajectory 0.689, model 0.722 / 0.968. Harbor never scored it (Modal spend cap); kept as evidence, **not counted** |
 | run-claude-3 | claude-code / opus-5 max (GCP VM, docker backend) | **0** | agent ~1 h 40 m, verifier 4 min | 3/5 (trajectory and model tests fail) | trajectory localprec 0.685 (gate 0.72); model 0.573 / 0.996, junk 0.05, apron 0.0 %; 948 k points |
 | run-codex-1 | codex / gpt-5.6-sol xhigh | **0** | agent 16 min 55 s, verifier 3 min 28 s | 3/5 (files, consistency, cleanliness) | trajectory localprec 0.684 (gate 0.72), model 0.659 (gate 0.72); coverage 0.99 both; 2.45 M input tokens |
 | run-codex-2 | codex / gpt-5.6-sol xhigh | **0** | agent 19 min 49 s; verifier re-run locally (see note) | 4/5 (trajectory test fails) | trajectory localprec 0.684 (gate 0.72); model 0.737 / 0.955, junk 0.06 — model gate passed, trajectory gate not |
@@ -66,8 +67,8 @@ CTRF: `docs/runs/run-codex-2/ctrf.json`; Modal's exception: `docs/runs/run-codex
 | Docker build | pass (Modal and local) |
 | Oracle validation | reward 1 — 3/3 on Modal (CI backend) + 2 local Docker runs |
 | Nop validation | reward 0 (Modal and local) |
-| 3 × claude-code (opus-5, max) genuinely fail | **3/3 reward 0** — 0.714, 0.689, 0.685 against the 0.72 trajectory gate |
-| 3 × codex (gpt-5.6-sol, xhigh) genuinely fail | **3/3 reward 0** — 0.684 ×3 |
+| 3 × claude-code (opus-5, max) genuinely fail | **3/3 reward 0**, all harbor-scored with 0 errors — trajectory 0.705, 0.707, 0.685 against the 0.72 gate |
+| 3 × codex (gpt-5.6-sol, xhigh) genuinely fail | **3/3 reward 0**, all harbor-scored with 0 errors — trajectory 0.684 ×3 |
 | 1 × claude-code `/cheat` scores zero | **reward 0** — probed for exploits, produced no deliverables, reported "no credible bypass exists" |
 | 1 × codex `/cheat` scores zero | **reward 0** — but by provider refusal on all 3 attempts, not by a defeated attack (see CHEAT_ANALYSIS.md) |
 
@@ -88,6 +89,8 @@ also contains an honest assessment of the 0.006 margin on the closest trial and 
 |---|---|---|---|
 | run-codex-1 (attempts 1 and 2) | 2026-09-16 | agent exited after 2 min: OpenAI returned `400 The 'gpt-5.6-sol' model is not supported when using Codex with a ChatGPT account` (codex login was a ChatGPT free-plan account; the model needs API-key access). No artifacts were produced, so harbor's Modal backend also raised `SandboxFilesystemNotFoundError: /app/aircraft.ply` on artifact download. Attempt 2 repeated the same error (harbor's `CODEX_FORCE_AUTH_JSON=1` always reads `~/.codex/auth.json`). Resolved by running with `OPENAI_API_KEY` in the host environment (harbor's default codex auth path), which is the third launch, counted as trial 1. | `docs/runs/run-codex-1-infra/` |
 | run-claude-1, run-claude-2, run-codex-2 (Modal) | 2026-09-16 | Modal terminated the **verifier image build** with "Container terminated due to reaching billing cycle spend limit" after each agent phase had completed normally; harbor recorded `ImageBuildError` and wrote no reward, so none of the three is a harness-scored model failure. All three were re-run end-to-end on the GCP VM (docker backend): `run-codex-2rerun`, `run-claude-1rerun`, `run-claude-2rerun`. The Modal artifacts and their hand-scored verifier output are kept for comparison but are **not** the reported results. | `docs/runs/run-claude-1/`, `run-claude-2/`, `run-codex-2/` (`modal_exception_tail.txt`, `result.json`) |
+| run-claude-1rerun, run-claude-2rerun (first attempts) | 2026-09-17 | Both died on the Claude subscription session limit ("You've hit your session limit · resets 5am (UTC)") after they were launched **concurrently** to save wall-clock time. A rate-limit failure, excluded by the brief. Re-run sequentially after the quota reset; running one opus-max trial at a time completed cleanly. | archived on the VM as `run-claude-*rerun-quota/` |
+| run-claude-2rerun (second attempt) | 2026-09-17 | `NetworkConnectionError` 6 min in, during agent installation; the agent never started and no transcript was produced. Relaunched immediately. | archived on the VM as `run-claude-2rerun-netfail/` |
 | run-claude-1 (attempt 1) | 2026-09-16 | agent exited after 40 s: Claude Code under subscription OAuth returned `model_not_found` for the literal model string `anthropic/claude-opus-5`; the API-key path CI uses resolves the provider prefix, the OAuth path does not. Relaunched with the bare id `claude-opus-5` (the same model), counted as trial 1. | `docs/runs/run-claude-1-infra/` |
 
 Per-job `ctrf.json` and `harbor analyze` output are committed under `docs/runs/<job-name>/`. Failure analysis:
