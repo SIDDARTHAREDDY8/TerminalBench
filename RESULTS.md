@@ -28,7 +28,8 @@ harbor analyze jobs/run-claude-N -m sonnet -r ../tb3/docs/prompts/trial-analysis
 
 | trial | agent / model | reward | wall time | verifier tests passed | notes |
 |---|---|---|---|---|---|
-| run-claude-1 | claude-code / opus-5 max | **0** | agent ~2 h 05 m; verifier re-run locally | 4/5 (trajectory test fails) | trajectory localprec **0.7138** (gate 0.72 — closest of any trial); model 0.760 / 0.970, junk 0.05, apron 0.0 % |
+| run-claude-1rerun | claude-code / opus-5 max (GCP VM, docker backend) | **0** | agent ~2 h 12 m, harbor-scored, 0 errors | 3/5 | trajectory localprec 0.705 (gate 0.72); model precision 0.817 — the sharpest model of any trial — but coverage 0.880 misses the 0.90 gate |
+| run-claude-1 *(Modal, superseded)* | claude-code / opus-5 max | 0 (hand-scored) | agent ~2 h 05 m | 4/5 | trajectory 0.7138, model 0.760 / 0.970. Harbor never scored it (Modal spend cap); kept as evidence, **not counted** |
 | run-claude-2 | claude-code / opus-5 max | **0** | agent ~2 h; verifier re-run locally | 4/5 (trajectory test fails) | trajectory localprec 0.689 (gate 0.72); model 0.722 / 0.968, junk 0.06, apron 0.0 %; 1.25 M points |
 | run-claude-3 | claude-code / opus-5 max (GCP VM, docker backend) | **0** | agent ~1 h 40 m, verifier 4 min | 3/5 (trajectory and model tests fail) | trajectory localprec 0.685 (gate 0.72); model 0.573 / 0.996, junk 0.05, apron 0.0 %; 948 k points |
 | run-codex-1 | codex / gpt-5.6-sol xhigh | **0** | agent 16 min 55 s, verifier 3 min 28 s | 3/5 (files, consistency, cleanliness) | trajectory localprec 0.684 (gate 0.72), model 0.659 (gate 0.72); coverage 0.99 both; 2.45 M input tokens |
