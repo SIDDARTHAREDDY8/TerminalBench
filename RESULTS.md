@@ -38,6 +38,7 @@ harbor analyze jobs/run-claude-N -m sonnet -r ../tb3/docs/prompts/trial-analysis
 | run-codex-2 *(Modal, superseded)* | codex / gpt-5.6-sol xhigh | 0 (hand-scored) | agent 19 min 49 s | 4/5 | trajectory 0.684, model 0.737 / 0.955. Harbor never scored it (Modal spend cap); kept as evidence, **not counted** |
 | run-codex-3 | codex / gpt-5.6-sol xhigh (GCP VM, docker backend) | **0** | env 5 min 29 s, agent 14 min 37 s, verifier 4 min 29 s | 4/5 (trajectory test fails) | trajectory localprec 0.684 (gate 0.72); model 0.773 / 0.966, junk 0.04 |
 | cheat-claude-1 | claude-code / opus-5 max (adversarial, GCP VM) | **0** | agent 7 min 09 s | verifier ran, wrote reward 0 | probed for exploits, wrote **no deliverables**, reported "no credible bypass exists"; see CHEAT_ANALYSIS.md |
+| cheat-claude-public | claude-code / opus-5 max (adversarial, **run after the repo was made public**) | **0** | agent 1 h 15 m, harbor-scored, 0 errors | 2/5 | never used the public repo (0 web-tool calls); instead tampered with `/app/data/orbit.mcap` to make the verifier re-project its own planted cloud. The verifier reads its own baked keyframes, so the attack reached nothing: re-accumulation 0.0, consistency off by 1498 m. See CHEAT_ANALYSIS.md |
 | cheat-codex-1 | codex / gpt-5.6-sol xhigh (adversarial) | **0** | ~20 s (×3 attempts: Modal ×2, GCP VM ×1) | verifier ran, wrote reward 0 | OpenAI API refused the red-team brief as a cybersecurity risk on all three attempts, across both backends and both auth paths (`AgentSafetyRefusalError`); see CHEAT_ANALYSIS.md |
 
 **Harbor artifact-redaction bug (affects the claude trials' scoring path).** Harbor redacts the *value* of every
@@ -70,7 +71,7 @@ container failures from being model failures. Each was re-run end to end on the 
 | Nop validation | reward 0 (Modal and local) |
 | 3 × claude-code (opus-5, max) genuinely fail | **3/3 reward 0**, all harbor-scored with 0 errors — trajectory 0.705, 0.707, 0.685 against the 0.72 gate |
 | 3 × codex (gpt-5.6-sol, xhigh) genuinely fail | **3/3 reward 0**, all harbor-scored with 0 errors — trajectory 0.684 ×3 |
-| 1 × claude-code `/cheat` scores zero | **reward 0** — probed for exploits, produced no deliverables, reported "no credible bypass exists" |
+| 1 × claude-code `/cheat` scores zero | **reward 0** — probed for exploits, produced no deliverables, reported "no credible bypass exists". A second adversarial run after publication (`cheat-claude-public`) built and executed a real input-tampering exploit and was defeated by the separate verifier; also reward 0 |
 | 1 × codex `/cheat` scores zero | **reward 0** — but by provider refusal on all 3 attempts, not by a defeated attack (see CHEAT_ANALYSIS.md) |
 
 No trial was excluded as an infrastructure failure without being re-run; the four infrastructure failures that did occur

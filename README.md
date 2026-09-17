@@ -64,6 +64,7 @@ tools/                          data-prep tooling and the verifier unit tests
 | `/run` trials — 3× claude-code opus-5 max | **3/3 reward 0** (trajectory 0.714 / 0.689 / 0.685 vs gate 0.72) |
 | `/run` trials — 3× codex gpt-5.6-sol xhigh | **3/3 reward 0** (trajectory 0.684 ×3) |
 | `/cheat` trial — claude-code opus-5 max | **reward 0** — no bypass found, no deliverables written |
+| `/cheat` re-run after publication — claude-code opus-5 max | **reward 0** — engineered an input-tampering exploit (rewrote the recording so the verifier would re-project a planted cloud); defeated because the verifier reads its own baked keyframes |
 | `/cheat` trial — codex gpt-5.6-sol xhigh | **reward 0** — provider refused the red-team brief (3 attempts) |
 
 The recording (2.92 GB) is not committed; `environment/Dockerfile` downloads it at build time from
@@ -86,12 +87,17 @@ itself is the search key. Terminal-Bench addresses this with the canary string (
 present in every task file here) and the closing "do not cheat by using online solutions" sentence in the instruction,
 not with secrecy.
 
-**Every trial recorded in `RESULTS.md` was run while this repository was private**, and the git history timestamps that:
-the trials completed on 2026-09-16 and 2026-09-17, before publication. They therefore measure the task's intrinsic
-difficulty, not its resistance to a web search. Anyone re-running trials against the published repository should expect
-different behaviour from an agent that chooses to search, and the adversarial finding in `CHEAT_ANALYSIS.md` is scoped
-to what it actually tested — the container's filesystem, the recording's own metadata records, and the verifier's
-reachable state — not to the open web.
+**The six agent trials in `RESULTS.md` were run while this repository was private**, and the git history timestamps
+that: they completed on 2026-09-16 and 2026-09-17, before publication. They therefore measure the task's intrinsic
+difficulty, not its resistance to a web search.
+
+**One adversarial trial was then re-run deliberately against the published repository** (`cheat-claude-public`) to test
+whether the exposure is exploitable in practice. It is not, on this evidence: the agent made zero web-search and
+zero web-fetch calls across 86 tool calls and never referenced this repository. It attacked the verifier's input
+instead — rewriting `/app/data/orbit.mcap` so that re-projecting its own delivered poses would reconstruct its
+`aircraft.ply` exactly — and the attack reached nothing, because the verifier's raw scans are baked into the verifier
+image and the agent container is destroyed before verification begins. Reward 0, caught independently by two gates.
+Full account in `CHEAT_ANALYSIS.md`.
 
 The dataset hosting the recording was also rewritten on 2026-09-17 so its card describes only the sensor data, with no
 link back here and no indication the recording belongs to a benchmark task.
