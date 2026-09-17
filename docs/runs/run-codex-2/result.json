@@ -1,0 +1,37 @@
+{
+    "id": "a05efd0a-949a-41ba-ae14-28d7cf11b775",
+    "started_at": "2026-09-16T19:26:28.898843",
+    "updated_at": "2026-09-16T19:48:32.551626",
+    "finished_at": "2026-09-16T19:48:32.551626",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 1,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "codex__gpt-5.6-sol__adhoc": {
+                "n_trials": 0,
+                "n_errors": 1,
+                "metrics": [
+                    {
+                        "mean": 0.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {},
+                "exception_stats": {
+                    "ImageBuildError": [
+                        "aircraft-orbit-mapping__TDeM7w7"
+                    ]
+                }
+            }
+        },
+        "n_input_tokens": 4314711,
+        "n_cache_tokens": 4184381,
+        "n_output_tokens": 37349,
+        "cost_usd": 3.0722173999999995
+    }
+}

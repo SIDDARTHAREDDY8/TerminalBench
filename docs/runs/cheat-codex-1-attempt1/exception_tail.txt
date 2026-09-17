@@ -1,0 +1,5 @@
+{"type":"thread.started","thread_ ... [19051 chars truncated] ... tag\n/usr/share/doc/ros-humble-trajectory-msgs\n/usr/include/kdl/trajectory.hpp\n/usr/include/kdl/trajectory_composite.hpp\n/usr/include/kdl/trajectory_segment.hpp\n/usr/include/kdl/trajectory_stationary.hpp\n","exit_code":0,"status":"completed"}}
+{"type":"error","message":"This content was flagged for possible cybersecurity risk. If this seems wrong, try rephrasing your request. To get authorized for security work, join the Trusted Access for Cyber program: https://chatgpt.com/cyber"}
+{"type":"turn.failed","error":{"message":"This content was flagged for possible cybersecurity risk. If this seems wrong, try rephrasing your request. To get authorized for security work, join the Trusted Access for Cyber program: https://chatgpt.com/cyber"}}
+
+stderr: None

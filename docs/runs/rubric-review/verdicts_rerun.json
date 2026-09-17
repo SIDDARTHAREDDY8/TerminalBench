@@ -1,0 +1,144 @@
+{
+  "checks": {
+    "verifiable": {
+      "outcome": "pass",
+      "explanation": "The verifier is a deterministic pytest suite (seeded RNGs, cKDTree queries, no threads affecting results) that consumes only baked reference data and the agent's two output files; test.sh performs no runtime network installs, and all verifier dependencies are pinned and baked into tests/Dockerfile."
+    },
+    "solvable": {
+      "outcome": "pass",
+      "explanation": "A complete, documented reference solution (solve.sh plus supporting scripts) is provided and verified to pass on multiple independent runs (Modal CI and local Docker); the expert_time_estimate of 5 hours is consistent with 'a few hours' for someone who already knows the approach."
+    },
+    "difficult": {
+      "outcome": "pass",
+      "explanation": "The task requires genuine SLAM/sensor-fusion expertise (scan-matching front end, loop-closed pose-graph back end, sensor-mount calibration via URDF, ground-plane/cluster extraction) that goes well beyond an average undergraduate course project, and the calibration record shows naive baselines (GNSS-INS accumulation, per-frame ICP, lightweight pose graph) all fail the gates."
+    },
+    "interesting": {
+      "outcome": "pass",
+      "explanation": "Producing an inspection-grade 3D model of a parked aircraft from ground-robot LiDAR data is described as, and plausibly is, real daily work for perception/mapping engineers serving airports and MROs."
+    },
+    "outcome_verified": {
+      "outcome": "pass",
+      "explanation": "The instruction states only the desired end state (two deliverable files with defined formats and accuracy thresholds) and does not mandate a specific tool, library, or step-by-step procedure; any SLAM/registration approach that meets the metrics is acceptable."
+    },
+    "anti_cheat_robustness": {
+      "outcome": "pass",
+      "explanation": "Ground-truth data (aircraft_ref.ply, keyframes.npz, thresholds.json) is baked only into the separate verifier image and is never present in the agent image or accessible during the agent phase; thresholds are calibrated so naive/spoofed trajectories measurably fail, and the two-deliverable consistency check makes it impractical to substitute an externally sourced model without doing the actual mapping."
+    },
+    "task_security": {
+      "outcome": "pass",
+      "explanation": "No credential exfiltration, obfuscation, prompt injection, or destructive operations were found; the only network activity is a pinned, checksum-verified download of a public dataset at build time, directly relevant to the task."
+    },
+    "functional_verification": {
+      "outcome": "pass",
+      "explanation": "Tests execute real geometric computation (ICP/global registration, KD-tree nearest-neighbour metrics, plane-distance fractions) on parsed point-cloud/trajectory data rather than performing any string or keyword matching."
+    },
+    "deterministic_reproducible": {
+      "outcome": "pass",
+      "explanation": "All Python dependencies in both environment/Dockerfile and tests/Dockerfile are exactly version-pinned, apt packages are left unpinned as expected, the dataset is fetched from a stable source with a pinned SHA-256, and all verifier randomness uses explicit seeds."
+    },
+    "essential_difficulty": {
+      "outcome": "pass",
+      "explanation": "The core difficulty is the SLAM/registration/extraction problem itself; output formats (TUM, binary PLY) are simple, standard, and clearly specified, so failures would stem from mapping accuracy, not formatting minutiae."
+    },
+    "test_instruction_alignment": {
+      "outcome": "pass",
+      "explanation": "Every assertion in test_outputs.py (file validity, 95% stamp coverage, P1/C1 on the re-accumulation, P2/C2/junk on aircraft.ply, frame-consistency, apron-fraction) traces directly to a requirement stated in instruction.md, and every instruction requirement has a corresponding test."
+    },
+    "novel": {
+      "outcome": "pass",
+      "explanation": "This is a custom scenario built around a real, non-public sensor recording and a bespoke pipeline (specific URDF, topic layout, thresholds); it is not a textbook exercise or a problem with a widely available canned solution."
+    },
+    "agentic": {
+      "outcome": "pass",
+      "explanation": "Solving this requires many rounds of environment exploration, building a ROS workspace, launching and monitoring long-running processes, iterating on parameters, and debugging failures — it cannot be produced by a single zero-shot generation."
+    },
+    "reviewable": {
+      "outcome": "pass",
+      "explanation": "The README's 'Calibration record' table gives concrete measured metrics for the reference solution and several naive baselines, letting a non-specialist see that the chosen gates (0.72/0.90/30%/2%) sit strictly between the reference and the shortcuts, even though the hidden reference model's exact generation script is not included in the task directory."
+    },
+    "instruction_concision": {
+      "outcome": "pass",
+      "explanation": "instruction.md is concise, uses absolute paths throughout, has no headings/roleplay/fluff, uses backticks for paths and formats, and describes only the required deliverables and their acceptance thresholds without hinting at a SLAM-specific solution approach."
+    },
+    "solution_quality": {
+      "outcome": "pass",
+      "explanation": "solve.sh performs genuine end-to-end computation (builds and runs a real SLAM stack against the recording, computes the trajectory and extracts the aircraft) rather than emitting a canned answer, and files longer than ~20 lines live as separate files in solution/ rather than as heredocs."
+    },
+    "separate_verifier_configured": {
+      "outcome": "pass",
+      "explanation": "All verifier inputs (the two declared artifacts plus reference/ and thresholds.json baked via COPY . /tests/) are available, all verifier tooling is pre-installed in tests/Dockerfile with no runtime installs in test.sh, and there are no shared assets between environment/ and tests/ that could drift."
+    },
+    "environment_hygiene": {
+      "outcome": "pass",
+      "explanation": "environment/Dockerfile does not copy tests/ or solution/, installs only ROS/runtime packages needed to actually perform the mapping task, and cleans apt lists; tests/Dockerfile owns all test-only Python dependencies and performs no apt operations."
+    },
+    "structured_data_schema": {
+      "outcome": "pass",
+      "explanation": "The exact TUM trajectory line format and the exact binary-little-endian PLY vertex schema (required float x/y/z properties) are both explicitly and normatively specified in instruction.md, not just exemplified."
+    },
+    "typos": {
+      "outcome": "pass",
+      "explanation": "No typos were found in filenames, paths, commands, variable names, or numeric identifiers across instruction.md, task.toml, the Dockerfiles, the solution scripts, or the test files; cross-references (e.g. transform values between README.txt and itrek_frames.urdf) are consistent."
+    },
+    "difficulty_explanation_quality": {
+      "outcome": "pass",
+      "explanation": "difficulty_explanation clearly identifies specific sources of difficulty (feature-poor apron, smooth-fuselage registration slip, missing sensor-mount transforms, a plausible-but-wrong GNSS shortcut), notes the data is a real untouched recording, and names the real-world role (perception/mapping engineer) that would face this problem."
+    },
+    "solution_explanation_quality": {
+      "outcome": "pass",
+      "explanation": "solution_explanation concisely states the strategy (URDF-published TF, NDT front end with pose-graph loop closure via a vendored lidarslam_ros2, ground-plane + clustering extraction) and is fully consistent with what solve.sh and the supporting scripts actually implement."
+    },
+    "verification_explanation_quality": {
+      "outcome": "pass",
+      "explanation": "verification_explanation describes exactly what is checked and how (re-projected hidden keyframes, global registration, precision/coverage/junk/apron gates) and justifies the threshold calibration with concrete measured numbers from the reference solution and multiple naive baselines, matching the actual test code."
+    },
+    "category_and_tags": {
+      "outcome": "pass",
+      "explanation": "category = Science / subcategory = Robotics fits a SLAM/perception task, and tags (lidar, slam, point-cloud, ros2, sensor-fusion) are specific and directly descriptive of the skills involved rather than generic."
+    },
+    "task_name": {
+      "outcome": "pass",
+      "explanation": "\"aircraft-orbit-mapping\" is a concise, three-word, kebab-case, descriptive name that accurately conveys the task's subject (mapping an aircraft from an orbiting drive) without opening any files."
+    },
+    "resource_configuration": {
+      "outcome": "pass",
+      "explanation": "Timeouts and resources (900s verifier, 14400s agent, 4 CPU/16GB/40GB build) are clearly customized from defaults and justified by concrete needs described in comments (colcon build memory, 3GB dataset, measured oracle/verifier runtimes), not left at arbitrary or excessive defaults."
+    },
+    "task_readme": {
+      "outcome": "fail",
+      "explanation": "Most of README.md (the difficulty/solution/verification explanations and relevant experience) is a verbatim copy of the corresponding task.toml metadata fields; only the added 'Calibration record' table is genuinely new context, so the bulk of the file duplicates information already present elsewhere."
+    },
+    "expert_time_estimate": {
+      "outcome": "pass",
+      "explanation": "expert_time_estimate_hours = 5 is non-zero and plausible given the described difficulty (building a ROS workspace, tuning a full SLAM pipeline, writing extraction/composition scripts)."
+    },
+    "task_toml_schema": {
+      "outcome": "pass",
+      "explanation": "task.toml uses only recognized fields in [task], [metadata], [verifier], [agent], [environment], and root-level artifacts; no invented fields are present."
+    },
+    "no_extraneous_files": {
+      "outcome": "pass",
+      "explanation": "Every file in the task directory is referenced: data files are copied by environment/Dockerfile and named in instruction.md, solution files are all invoked from solve.sh, and reference/ and thresholds.json are consumed by the tests."
+    },
+    "artifact_efficiency": {
+      "outcome": "pass",
+      "explanation": "The only declared artifacts are the two small agent-produced deliverables (trajectory.tum, aircraft.ply); no build-time-fixed or bulky data is shipped as an artifact, and no verifier.collect hooks are used."
+    },
+    "verifier_execution_isolation": {
+      "outcome": "not_applicable",
+      "explanation": "The verifier never executes agent-produced code; it only parses the agent's trajectory.tum as text and aircraft.ply via plyfile as pure data, as explicitly documented in test.sh and verify_lib.py."
+    },
+    "ctrf_reporting": {
+      "outcome": "pass",
+      "explanation": "test.sh runs pytest with --ctrf \"$LOG_DIR/ctrf.json\" against the 5 discrete tests in test_outputs.py, matching the standard CTRF reporting pattern, and additionally cross-checks the CTRF report's pass count before granting reward."
+    },
+    "do_not_modify_enforced": {
+      "outcome": "not_applicable",
+      "explanation": "instruction.md contains no constraint telling the agent not to modify, delete, or preserve any concrete artifact."
+    },
+    "binary_reward": {
+      "outcome": "pass",
+      "explanation": "test.sh writes exactly 1 or 0 to reward.txt on every reachable path (pytest success plus CTRF cross-check, or any failure/error branch), with no fractional or weighted scoring anywhere in the verifier."
+    }
+  }
+}

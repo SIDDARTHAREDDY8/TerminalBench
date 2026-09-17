@@ -5,3 +5,6 @@ jobs/
 *.ply
 !tasks/**/tests/reference/*.ply
 __pycache__/
+.pytest_cache/
+# run evidence under docs/runs/ must be committable despite the *.ply / *.pcd rules above
+!docs/runs/**

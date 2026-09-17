@@ -1,0 +1,20 @@
+[oracle] start 2026-09-16T21:30:19Z  rate=0.5 topics=/fused_points /tf /tf_static
+[oracle] start 2026-09-16T22:17:16Z  rate=0.5 topics=/fused_points /tf /tf_static
+[oracle] ready: /map_save service
+[oracle] ready: /fused_points subscriber
+[oracle] ready: /current_pose subscriber
+[oracle] ready: robot_state_publisher
+[oracle] playing /app/data/orbit.mcap at 0.5x
+[oracle] playback finished; letting the map thread drain
+[oracle] final /modified_path received (seq 1); map.pcd written
+[oracle] ros2 launch did not exit on SIGINT; escalating
+-rw------- 1 root root    13022 Sep 16 22:29 keyframes.json
+front-end poses: 965 (964/1462 cloud stamps matched exactly, 498 interpolated); keyframes: 76
+keyframe stamps matched exactly to front-end poses: 76/76
+keyframe corrections: |dp| max 0.011 m (mean 0.000), |dR| max 0.04 deg
+wrote 1462 poses to /app/trajectory.tum; xyz extent 54.1 m; start [0. 0. 0.] end [-1.22  2.34  0.07]
+main cluster: label 0 n=63782 centroid [11.96 15.04  2.33] (2.1 m from orbit centre)
+aircraft: 109056 points, bbox extent [32.46 29.5   9.15] m, centroid [12.85 15.21  2.12], 3.0 m from orbit centre, min height above ground 0.40 m
+wrote /app/aircraft.ply
+[oracle] done 2026-09-16T22:31:02Z
+[oracle] cleanup

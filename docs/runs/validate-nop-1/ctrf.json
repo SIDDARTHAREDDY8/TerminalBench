@@ -1,0 +1,79 @@
+{
+    "reportFormat": "CTRF",
+    "specVersion": "0.0.0",
+    "timestamp": "2026-09-16T22:53:50.568038+00:00",
+    "generatedBy": "pytest",
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "9.1.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 0,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1789599230072,
+            "stop": 1789599230567
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_outputs.py::test_files",
+                "status": "failed",
+                "duration": 33,
+                "start": 1789599230514,
+                "stop": 1789599230547,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def trajectory():\n>       assert os.path.isfile(TRAJECTORY_PATH), f\"missing deliverable {TRAJECTORY_PATH}\"\nE       AssertionError: missing deliverable /app/trajectory.tum\nE       assert False\nE        +  where False = <function isfile at 0x2ac1a8e80360>('/app/trajectory.tum')\nE        +    where <function isfile at 0x2ac1a8e80360> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntest_outputs.py:71: AssertionError"
+            },
+            {
+                "name": "test_outputs.py::test_reaccumulation",
+                "status": "failed",
+                "duration": 5,
+                "start": 1789599230547,
+                "stop": 1789599230552,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def trajectory():\n>       assert os.path.isfile(TRAJECTORY_PATH), f\"missing deliverable {TRAJECTORY_PATH}\"\nE       AssertionError: missing deliverable /app/trajectory.tum\nE       assert False\nE        +  where False = <function isfile at 0x2ac1a8e80360>('/app/trajectory.tum')\nE        +    where <function isfile at 0x2ac1a8e80360> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntest_outputs.py:71: AssertionError"
+            },
+            {
+                "name": "test_outputs.py::test_aircraft_model",
+                "status": "failed",
+                "duration": 6,
+                "start": 1789599230552,
+                "stop": 1789599230558,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def aircraft():\n>       assert os.path.isfile(AIRCRAFT_PATH), f\"missing deliverable {AIRCRAFT_PATH}\"\nE       AssertionError: missing deliverable /app/aircraft.ply\nE       assert False\nE        +  where False = <function isfile at 0x2ac1a8e80360>('/app/aircraft.ply')\nE        +    where <function isfile at 0x2ac1a8e80360> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntest_outputs.py:80: AssertionError"
+            },
+            {
+                "name": "test_outputs.py::test_consistency",
+                "status": "failed",
+                "duration": 4,
+                "start": 1789599230558,
+                "stop": 1789599230562,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def aircraft():\n>       assert os.path.isfile(AIRCRAFT_PATH), f\"missing deliverable {AIRCRAFT_PATH}\"\nE       AssertionError: missing deliverable /app/aircraft.ply\nE       assert False\nE        +  where False = <function isfile at 0x2ac1a8e80360>('/app/aircraft.ply')\nE        +    where <function isfile at 0x2ac1a8e80360> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntest_outputs.py:80: AssertionError"
+            },
+            {
+                "name": "test_outputs.py::test_cleanliness",
+                "status": "failed",
+                "duration": 4,
+                "start": 1789599230563,
+                "stop": 1789599230567,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "trace": "@pytest.fixture(scope=\"module\")\n    def aircraft():\n>       assert os.path.isfile(AIRCRAFT_PATH), f\"missing deliverable {AIRCRAFT_PATH}\"\nE       AssertionError: missing deliverable /app/aircraft.ply\nE       assert False\nE        +  where False = <function isfile at 0x2ac1a8e80360>('/app/aircraft.ply')\nE        +    where <function isfile at 0x2ac1a8e80360> = <module 'posixpath' (frozen)>.isfile\nE        +      where <module 'posixpath' (frozen)> = os.path\n\ntest_outputs.py:80: AssertionError"
+            }
+        ]
+    }
+}

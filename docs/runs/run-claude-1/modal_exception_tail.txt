@@ -1,0 +1,3 @@
+    raise ImageBuildError(msg, image_id)
+modal.exception.ImageBuildError: Image build for im-mSJdSkkQS[REDACTED]5UoVym5haNtB terminated due to external shut-down with the exception:
+Container terminated due to reaching billing cycle spend limit

@@ -1,0 +1,77 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.16, pytest-9.1.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.5.2
+collected 5 items
+
+test_outputs.py EEEEE                                                    [100%]
+
+==================================== ERRORS ====================================
+_________________________ ERROR at setup of test_files _________________________
+
+    @pytest.fixture(scope="module")
+    def trajectory():
+>       assert os.path.isfile(TRAJECTORY_PATH), f"missing deliverable {TRAJECTORY_PATH}"
+E       AssertionError: missing deliverable /app/trajectory.tum
+E       assert False
+E        +  where False = <function isfile at 0x7cfa80494360>('/app/trajectory.tum')
+E        +    where <function isfile at 0x7cfa80494360> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+test_outputs.py:71: AssertionError
+____________________ ERROR at setup of test_reaccumulation _____________________
+
+    @pytest.fixture(scope="module")
+    def trajectory():
+>       assert os.path.isfile(TRAJECTORY_PATH), f"missing deliverable {TRAJECTORY_PATH}"
+E       AssertionError: missing deliverable /app/trajectory.tum
+E       assert False
+E        +  where False = <function isfile at 0x7cfa80494360>('/app/trajectory.tum')
+E        +    where <function isfile at 0x7cfa80494360> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+test_outputs.py:71: AssertionError
+____________________ ERROR at setup of test_aircraft_model _____________________
+
+    @pytest.fixture(scope="module")
+    def aircraft():
+>       assert os.path.isfile(AIRCRAFT_PATH), f"missing deliverable {AIRCRAFT_PATH}"
+E       AssertionError: missing deliverable /app/aircraft.ply
+E       assert False
+E        +  where False = <function isfile at 0x7cfa80494360>('/app/aircraft.ply')
+E        +    where <function isfile at 0x7cfa80494360> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+test_outputs.py:80: AssertionError
+______________________ ERROR at setup of test_consistency ______________________
+
+    @pytest.fixture(scope="module")
+    def aircraft():
+>       assert os.path.isfile(AIRCRAFT_PATH), f"missing deliverable {AIRCRAFT_PATH}"
+E       AssertionError: missing deliverable /app/aircraft.ply
+E       assert False
+E        +  where False = <function isfile at 0x7cfa80494360>('/app/aircraft.ply')
+E        +    where <function isfile at 0x7cfa80494360> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+test_outputs.py:80: AssertionError
+______________________ ERROR at setup of test_cleanliness ______________________
+
+    @pytest.fixture(scope="module")
+    def aircraft():
+>       assert os.path.isfile(AIRCRAFT_PATH), f"missing deliverable {AIRCRAFT_PATH}"
+E       AssertionError: missing deliverable /app/aircraft.ply
+E       assert False
+E        +  where False = <function isfile at 0x7cfa80494360>('/app/aircraft.ply')
+E        +    where <function isfile at 0x7cfa80494360> = <module 'posixpath' (frozen)>.isfile
+E        +      where <module 'posixpath' (frozen)> = os.path
+
+test_outputs.py:80: AssertionError
+=========================== short test summary info ============================
+ERROR test_outputs.py::test_files - AssertionError: missing deliverable /app/...
+ERROR test_outputs.py::test_reaccumulation - AssertionError: missing delivera...
+ERROR test_outputs.py::test_aircraft_model - AssertionError: missing delivera...
+ERROR test_outputs.py::test_consistency - AssertionError: missing deliverable...
+ERROR test_outputs.py::test_cleanliness - AssertionError: missing deliverable...
+============================== 5 errors in 0.44s ===============================
+verifier: FAIL (pytest status 1, ctrf_ok 0; reward 0)

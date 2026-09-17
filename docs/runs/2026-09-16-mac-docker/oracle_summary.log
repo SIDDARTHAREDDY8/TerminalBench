@@ -1,0 +1,25 @@
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/colcon_build.log:Finished <<< ndt_omp_ros2 [1.35s]
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/colcon_build.log:Finished <<< lidarslam_msgs [4.86s]
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/colcon_build.log:Finished <<< scanmatcher [2.89s]
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/colcon_build.log:Finished <<< graph_based_slam [4min 13s]
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/colcon_build.log:Summary: 4 packages finished [4min 18s]
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] start 2026-09-16T21:30:19Z  rate=0.5 topics=/fused_points /tf /tf_static
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] start 2026-09-16T21:44:47Z  rate=0.5 topics=/fused_points /tf /tf_static
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:Finished <<< graph_based_slam [4min 13s]
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:Summary: 4 packages finished [4min 18s]
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] ready: /map_save service
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] ready: /fused_points subscriber
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] ready: /current_pose subscriber
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] ready: robot_state_publisher
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] playing /app/data/orbit.mcap at 0.5x
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] playback finished; letting the map thread drain
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] final /modified_path received (seq 1); map.pcd written
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:-rw------- 1 root root    13193 Sep 16 21:58 keyframes.json
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:front-end poses: 1185 (1184/1462 cloud stamps matched exactly, 278 interpolated); keyfram
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:keyframe stamps matched exactly to front-end poses: 77/77
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:keyframe corrections: |dp| max 0.011 m (mean 0.000), |dR| max 0.04 deg
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:wrote 1462 poses to /app/trajectory.tum; xyz extent 54.2 m; start [0. 0. 0.] end [-1.07  
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:main cluster: label 0 n=61350 centroid [12.5  15.21  2.41] (2.6 m from orbit centre)
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:aircraft: 134053 points, bbox extent [32.61 29.62  9.43] m, centroid [12.25 14.66  1.74],
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:wrote /app/aircraft.ply
+/private/tmp/claude-501/-Users-siddarthareddychinthala-Desktop/7f0943e3-3016-4e76-b832-7b1e9db63354/scratchpad/run2/logs/solve.log:[oracle] cleanup

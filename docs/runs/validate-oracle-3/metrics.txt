@@ -1,0 +1,3 @@
+[test_reaccumulation] {"localprec": 0.8134, "coverage": 0.9953, "junk": 0.3084, "n_points": 396512, "n_near_reference": 274245, "icp_fitness": 0.6387, "icp_rmse": 0.0611}
+[test_aircraft_model] {"localprec": 0.8038, "coverage": 0.9891, "junk": 0.1459, "n_points": 112844, "n_near_reference": 96376, "icp_fitness": 0.7591, "icp_rmse": 0.0634}
+[test_cleanliness] {"ground_fraction": 0.0, "n_points": 112844}

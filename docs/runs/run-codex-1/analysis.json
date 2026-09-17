@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "trial_name": "aircraft-orbit-mapping__Dgq9WVJ",
+      "summary": "This job run contains a single trial: codex (gpt-5.6-sol, reasoning_effort=xhigh) attempting the aircraft-orbit-mapping SLAM task. The trial failed (reward 0.0): of 5 verifier checks, test_files, test_consistency, and test_cleanliness passed, but test_reaccumulation (local precision 0.684 vs required 0.72) and test_aircraft_model (local precision 0.659 vs required 0.72) both failed. The agent explicitly chose to use the raw GNSS-INS pose stream as the trajectory backbone instead of building the scan-matching + loop-closure SLAM pipeline the task was designed to require, reasoning from a flawed self-check that its precision was 'comfortably above' threshold. Its results (0.684 / 0.659 local precision) land almost exactly on the task author's documented 'GNSS-INS pose accumulation' shortcut baseline (0.68), confirming the verifier gate is correctly separating naive shortcuts from genuine SLAM solutions rather than being miscalibrated. The agent used only ~17 minutes of its 4-hour budget, so it stopped well short of the timeout with time to spare for a more robust approach it did not attempt.",
+      "checks": {
+        "task_specification": {
+          "explanation": "The agent correctly parsed and executed against every explicit requirement (TUM format, PLY format, world-frame consistency, apron exclusion, timestamp coverage) — test_files, test_consistency, and test_cleanliness all passed, showing the instructions were unambiguous and fully actionable.",
+          "outcome": "pass"
+        },
+        "reward_hacking": {
+          "explanation": "No evidence of the agent probing for test/solution/verifier files, hardcoding reference values, or otherwise gaming the grader; the trajectory log shows only legitimate data exploration and reconstruction commands against /app/data.",
+          "outcome": "pass"
+        },
+        "difficulty_crux": {
+          "explanation": "The failure is exactly the crux the task was designed around: the task's difficulty_explanation warns that 'the GNSS-INS pose stream looks usable but its heading noise... smears every accumulation below the precision gate.' The agent fell into precisely this trap, explicitly deciding to skip scan-matching/loop-closure and keep GNSS-INS poses, landing at 0.684/0.659 precision — almost identical to the documented naive-baseline score of 0.68. This is genuine, intended difficulty, not an artifact of a confusing task.",
+          "outcome": "pass"
+        },
+        "near_miss": {
+          "explanation": "Although the numeric gap (0.684 vs 0.72, 0.659 vs 0.72) looks small, this is not a threshold-calibration issue: the agent's approach is the specific 'shortcut' baseline the task's calibration doc names, and its score lands right on that baseline cluster (0.68) rather than near the reference-solution cluster (0.78-0.81). The gate is correctly discriminating between the naive and correct approaches, not being missed by a hair on an otherwise-correct solution.",
+          "outcome": "pass"
+        },
+        "refusals": {
+          "explanation": "No refusal behavior occurred. The only match for 'refus' in the logs was an unrelated setup warning ('Refusing to create helper binaries under temporary dir'), not a model refusal of the task content.",
+          "outcome": "not_applicable"
+        },
+        "low_timeout": {
+          "explanation": "The agent finished in about 17 minutes against a 4-hour (14400s) budget, so timeout was not a constraint; the failure was due to an insufficiently rigorous methodological choice, not running out of time. There was ample budget left to attempt scan-matching/loop-closure SLAM, which the agent chose not to pursue.",
+          "outcome": "pass"
+        }
+      },
+      "cost_usd": 0.30291860000000004,
+      "error": null
+    }
+  ]
+}

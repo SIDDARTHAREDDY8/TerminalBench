@@ -66,3 +66,42 @@ under emulation — works, slower. Set `DOCKER_DEFAULT_PLATFORM=linux/amd64` for
 - extract_aircraft.py leaves ~1.6 % apron points (gate 2 %) — fine, but tight; raise
   `--ground-clearance` to 0.25 if Docker runs land above 2 %.
 - HF write token was pasted in chat on 2026-09-16 — revoke it after the upload.
+
+## Progress on the Mac (2026-09-16, evening)
+Done: one-time setup (uv, harbor 0.23.0, codex 0.154.0 already logged in, tb3 clone), 22/22 static checks,
+verifier unit tests 27/27, both images built (amd64), nop → reward 0, oracle by hand → reward 1 after three fixes
+(see docs/CALIBRATION.md "Docker run 1"): `fastdds_profile.xml` element name, bounded shutdown in `solve.sh`,
+`extract_aircraft.py` default clearance 0.40. The "Known open items" above are resolved by these.
+
+Constraints found: this Mac has 8 GB RAM. Docker at 7 GB with `BUILD_JOBS=1` is the minimum that builds; the
+task's declared 4 CPU / 16 GB is not reproducible locally, and amd64 emulation drops ~19 % of scans at 0.5x and
+yields no loop closures. Use `--env modal` (the TB3 CI default) for the harbor oracle/nop validation and for all
+trials; keep the local Docker path for shaking out scripts only. `modal` CLI is installed; `modal setup` and
+`gh auth login` / `claude setup-token` are still to be done by hand.
+
+Consider for CI robustness: `colcon build --parallel-workers 2` with `-j2` runs four cc1plus at once; on the
+4 CPU / 16 GB CI box that is ~12 GB peak. `BUILD_JOBS=1` costs ~2 min and halves it.
+
+## State at 2026-09-16 19:45 EDT
+Gates: static 22/22; rubric 32/0/3 (three attempts, see CHECKS.md); Modal oracle 3/3 reward 1; Modal nop 0; instruction.md
+and README sections written. Repo made private before cheat trials. Trials: run-codex-1 reward 0 (genuine crux failure,
+analyzed); cheat-codex-1 reward 0 but OpenAI refused the red-team brief (two attempts); run-claude-1, run-claude-2,
+run-codex-2 in flight on Modal. Remaining: run-claude-3, run-codex-3, cheat-claude-1, `harbor analyze` on every job,
+final RESULTS / FAILURE_ANALYSIS / CHEAT_ANALYSIS tables, commit.
+
+Launch scripts (session scratchpad, read the token files there): `run_claude_trial.sh <N|cheat>`,
+`run_codex_trial.sh <N|cheat>`, `run_rubric.sh`, `run_analyze.sh <job-dir>`. Auth lessons: harbor's claude-code under
+subscription OAuth needs exact model ids (`claude-opus-5`, `claude-sonnet-5`, no `anthropic/` prefix, no aliases);
+`harbor exec` mangles `--ae`, so export `CLAUDE_FORCE_OAUTH=1` + token in the host env; codex must use `OPENAI_API_KEY`
+(a ChatGPT-account login cannot use gpt-5.6-sol; `CODEX_FORCE_AUTH_JSON=1` always reads `~/.codex/auth.json`).
+
+## Complete — 2026-09-17 02:30 UTC
+All gates and all eight trials are done; see `CHECKS.md`, `RESULTS.md`, `FAILURE_ANALYSIS.md`, `CHEAT_ANALYSIS.md`.
+Backends: Modal until its free-tier spend cap was reached, then harbor's `docker` backend on a GCP `e2-standard-4`
+(4 vCPU / 16 GB, the task's declared resources). The VM `tb3-runner` (us-central1-a, project terminalbench-508900) is
+left running at the author's request; `gcloud compute instances stop tb3-runner --zone us-central1-a` halts compute
+billing, `... delete ...` removes it.
+
+Remaining optional work: `harbor analyze` on run-claude-3 and both cheat jobs (the other five trials are analyzed);
+the metric revision proposed at the end of `FAILURE_ANALYSIS.md` (exclude sub-reference-surface halo points from the
+precision denominator, then recalibrate every baseline from scratch) if the task is ever submitted to TB3 proper.

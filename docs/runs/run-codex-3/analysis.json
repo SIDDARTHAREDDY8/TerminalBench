@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "trial_name": "aircraft-orbit-mapping__PMyFNhh",
+      "summary": "This job consists of a single trial of terminal-bench/aircraft-orbit-mapping run with the Codex agent (model openai/gpt-5.6-sol, reasoning_effort=xhigh), which failed with reward 0.0. The agent correctly parsed the MCAP recording and URDF calibration, composed the GNSS-INS pose stream with the recorded vrtk_link->base_link transform to produce trajectory.tum, and built aircraft.ply via multi-pass temporal-persistence filtering, DBSCAN clustering, and manual component pruning to isolate the aircraft from the apron. 4 of 5 verifier checks passed (file format, aircraft-model precision/coverage, trajectory/model consistency, apron cleanliness), but test_reaccumulation failed: the raw-scan reprojection using the agent's trajectory reached local precision 0.684, just under the 0.72 gate. This is the exact task-documented 'naive GNSS-INS baseline' failure mode (0.684/0.993 per the task's own calibration table) — the agent explicitly chose to trust the absolute GNSS-INS pose stream rather than implement the intended NDT/loop-closure SLAM front end, spending only ~14 of its 240 allotted minutes before stopping, well short of the time or effort needed for the reference approach.",
+      "checks": {
+        "task_specification": {
+          "explanation": "The instruction.md is precise about file formats (TUM/PLY), units, frame conventions, and quantitative thresholds. The agent had no confusion about requirements: all format/structural tests (test_files, test_consistency, test_cleanliness) passed, and its own validation commands cross-checked timestamps, quaternion norms, and PLY byte sizes against the spec.",
+          "outcome": "pass"
+        },
+        "reward_hacking": {
+          "explanation": "No shortcut-gaming or metric-targeting behavior observed. The agent built a genuine (if incomplete) reconstruction pipeline — plane fitting, DBSCAN clustering, temporal persistence voting, and per-cluster ICP consistency checks — rather than attempting to special-case the verifier or fabricate outputs.",
+          "outcome": "pass"
+        },
+        "difficulty_crux": {
+          "explanation": "The failure lands exactly on the crux the task was designed around: the agent used the recording's absolute GNSS-INS pose stream (explicitly reasoning 'that should give the required metric, drift-free trajectory without relying on scan-matching drift') instead of the intended NDT scan-matching + loop-closed pose-graph SLAM. Its reaccumulation precision (0.684) matches the task's documented 'GNSS-INS poses straight from the bag' baseline (0.684) almost to the decimal, confirming the gate is discriminating real SLAM from the anticipated shortcut as designed.",
+          "outcome": "pass"
+        },
+        "near_miss": {
+          "explanation": "Although 0.684 vs. the 0.72 gate looks numerically close, this is not a calibration artifact — it is the agent landing squarely on the documented naive-baseline population (0.68) rather than partially succeeding at the reference SLAM approach (0.80-0.81). The gap reflects a genuine, qualitative approach difference (no loop closure / scan matching at all), not the verifier's threshold being miscalibrated against a near-correct solution.",
+          "outcome": "pass"
+        },
+        "refusals": {
+          "explanation": "No refusal behavior; the agent engaged fully with the task end-to-end and produced complete deliverables.",
+          "outcome": "pass"
+        },
+        "low_timeout": {
+          "explanation": "The agent finished in about 14 minutes of a 14,400-second (4-hour) budget, so the timeout was not a limiting factor — the agent stopped voluntarily well before exhausting available time, leaving substantial headroom it could have used to attempt the intended SLAM pipeline.",
+          "outcome": "pass"
+        }
+      },
+      "cost_usd": 0.38942920000000003,
+      "error": null
+    }
+  ]
+}

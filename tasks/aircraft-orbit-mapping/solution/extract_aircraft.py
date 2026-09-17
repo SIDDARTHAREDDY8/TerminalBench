@@ -16,7 +16,12 @@ Method
      height percentile, minimum over the 3x3 neighbourhood so cells fully
      covered by the fuselage inherit the apron height next to them) absorbs the
      apron's crown/slope. Every point closer than --ground-clearance to the
-     local ground, or below it, is dropped.
+     local ground, or below it, is dropped. The default clearance (0.40 m) is
+     deliberately generous: nothing of the aircraft sits lower than that (the
+     lowest surface is ~0.5 m above the apron), while a smeared or doubled
+     apron layer in the SLAM map otherwise leaks through and fails the
+     verifier's apron gate (measured 10.9 % at 0.20 m vs 0.0 % at 0.40 m on a
+     Docker run).
   4. Clusters: DBSCAN (eps --eps, default 0.5 m) on a 0.10 m voxel copy of the
      points higher than --cluster-min-height above the plane (0.40 m), so that
      residual apron points cannot bridge the aircraft to nearby clutter. The
@@ -174,7 +179,7 @@ def main():
     ap.add_argument('--trajectory', required=True)
     ap.add_argument('--out', required=True)
     ap.add_argument('--eps', type=float, default=0.5)
-    ap.add_argument('--ground-clearance', type=float, default=0.20)
+    ap.add_argument('--ground-clearance', type=float, default=0.40)
     ap.add_argument('--cluster-min-height', type=float, default=0.40)
     ap.add_argument('--ground-cell', type=float, default=2.0)
     ap.add_argument('--region-margin', type=float, default=4.0)

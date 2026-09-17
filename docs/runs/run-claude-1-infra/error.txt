@@ -1,0 +1,2 @@
+"error":"model_not_found"
+model (anthropic/claude-opus-5). It may not exist or you may not have access to it. Run --model to pick a different model.

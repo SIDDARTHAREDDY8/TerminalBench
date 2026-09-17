@@ -1,10 +1,10 @@
 # Verifier calibration record — aircraft-orbit-mapping (2026-09-16, native runs)
 
-Reference: `N55FV-Final.ply` (mentor lidarslam map, hand-cleaned in CloudCompare), voxel 0.05 → 76 480 pts.
+Reference: `aircraft_ref_source.ply` (mentor lidarslam map, hand-cleaned in CloudCompare), voxel 0.05 → 76 480 pts.
 Metric: localprec@0.10 = of output points within 1 m of reference, fraction within 0.10 m;
 coverage@0.20 = fraction of reference points within 0.20 m of output; junk = fraction of output > 1 m from reference.
 
-## Oracle candidates (fresh lidarslam_ros2 runs on the April N55FV bag, native ROS 2 Humble)
+## Oracle candidates (fresh lidarslam_ros2 runs on the April orbit recording, native ROS 2 Humble)
 | run | params | play rate | keyframes / loop edges | model localprec | model coverage | junk |
 |---|---|---|---|---|---|---|
 | spike1 | handoff defaults (vg_in 0.5, vg_map 0.2) | 0.5x | 70 / 260 | 0.784 | 0.991 | 0.163 |
@@ -27,7 +27,7 @@ Uncropped full-scene keyframes cannot be aligned to the aircraft-only reference 
 | GNSS + per-frame ICP refine | 0.57 | 0.82 | 0.08 |
 | GNSS + pose graph (lightweight) | 0.66 | 0.74 | 0.08 |
 | dense keyframes (aircraft_dense.pcd) | 0.55 | 0.25 | 0.09 |
-| accumulate ENU (N55FV_accum_aircraft_enu.ply) | 0.33 | 0.12 | 0.11 |
+| accumulate ENU (accum_aircraft_enu.ply) | 0.33 | 0.12 | 0.11 |
 | reference vs itself | 1.000 | 1.000 | 0.000 |
 
 ## Full verifier suite (tests/test_outputs.py, pinned venv)
@@ -43,6 +43,43 @@ Reference min height 0.468 m; fraction < 0.15 m: reference 0.0 %, oracle 1.6 %, 
 Extents check dropped: robust 1–99 % extents along reference axes are ref 25.8/25.9/5.3, oracle 29.5/23.3/5.7,
 GNSS 32.9/30.8/4.9 — a more complete model differs more than a smeared one; not a cleanliness signal. Junk ≤ 0.30 gates clutter.
 
-## Thresholds chosen (pending Docker oracle repeats)
-P1 = P2 = 0.72 (oracle 0.78–0.80, best shortcut 0.68), C1 = C2 = 0.90 (oracle 0.99, shortcuts ≤ 0.89 on model),
+## Thresholds chosen (confirmed by the Docker and Modal oracle repeats recorded above)
+P1 = P2 = 0.72 (oracle 0.80–0.81 on five later runs, best shortcut 0.68), C1 = C2 = 0.90 (oracle 0.99, shortcuts ≤ 0.89 on model),
 junk_max = 0.30, ground ≤ 2 % within 0.15 m.
+
+## Docker run 1 — Mac (Apple Silicon, linux/amd64 under Rosetta), 2026-09-16
+Environment image built from `environment/Dockerfile` (bag SHA-256 verified, image 3.87 GB); verifier image 126 MB.
+Oracle run by hand in the environment image with `solution/` bind-mounted, 6 CPUs. A first attempt at 6 GB was
+OOM-killed inside colcon (cc1plus on `graph_based_slam`); the run below used `BUILD_JOBS=1` and a 7 GB cap
+(graph_based_slam 4 min 13 s at -j1). All apt names and rosdep resolve; four packages build.
+
+Findings that changed the oracle (all fixed in `solution/`):
+- `fastdds_profile.xml` was rejected by Fast DDS (`max_message_size` must be `maxMessageSize`), so this run used the
+  default transports. Front-end processed 1185/1462 scans (81 %), 77 keyframes, **0 accepted loop closures**
+  (candidates only appear after 100 m of path; `min_fitness_score` 3.1–4.0 vs threshold 0.7).
+- `ros2 launch` started as a bash background job never received SIGINT (async jobs of a non-interactive shell start with
+  SIGINT ignored); `solve.sh` hung in `wait`. Now INT → TERM → KILL with a 30 s bound per step.
+- `extract_aircraft.py` at `--ground-clearance 0.20` let a smeared apron layer through: 10.9 % of the model within
+  0.15 m of the apron plane (gate 2 %), 95 % of those points > 1 m from the reference. Default raised to 0.40 m
+  (reference's lowest surface is 0.468 m above the apron).
+
+| artifacts (same trajectory) | reaccumulation | aircraft_model | consistency | cleanliness | reward |
+|---|---|---|---|---|---|
+| clearance 0.20 (old default) | 0.813 / 0.995, junk 0.31 | 0.784 / 0.992, junk 0.26 | 9 mm / 0.03° | **10.9 %** | 0 |
+| clearance 0.35 | same | 0.804 / 0.992, junk 0.16 | — | 0.3 % | (metrics only) |
+| clearance 0.40 (new default) | same | 0.812 / 0.992, junk 0.15 | 7 mm / 0.03° | 0.0 % | **1** |
+
+Verifier wall time under emulation: 4 min 23 s (timeout 900 s). Oracle wall time from the deps snapshot: ~18 min
+(build 4 min, SLAM launch + bag play at 0.5x ~7 min, compose + extract ~5 min); apt/pip deps add ~11 min on a cold image.
+Note the trajectory passes with margin even without loop closures and with 19 % of scans dropped — the odom-prior NDT
+front-end alone is drift-free enough on this orbit. CTRF report: `docs/runs/2026-09-16-mac-docker/ctrf.json`.
+
+## Modal (CI backend) oracle runs, 2026-09-16 — `harbor run --agent oracle --env modal`
+| job | env build | oracle | verifier | reaccumulation | aircraft_model | junk | apron | reward |
+|---|---|---|---|---|---|---|---|---|
+| validate-oracle-1 | 4 min 11 s | 10 min 33 s | 2 min 10 s | 0.813 / 0.995 | 0.804 / 0.989 | 0.146 | 0.0 % | 1 |
+| validate-oracle-2 | cached | 9 min 54 s | 2 min 13 s | 0.813 / 0.995 | 0.804 / 0.989 | 0.146 | 0.0 % | 1 |
+| validate-oracle-3 | cached | 9 min 54 s | 1 min 55 s | 0.813 / 0.995 | 0.804 / 0.989 | 0.146 | 0.0 % | 1 |
+Three runs agree to the third decimal, so the bag-replay SLAM is effectively deterministic on the CI backend.
+Native x86-64 at 4 CPU / 16 GB (no emulation): the oracle takes about 10 minutes and the verifier about 2, versus 14 and 4.4
+under Rosetta on the Mac. Margins to the gates (0.72 / 0.90 / 0.30 / 2 %) are unchanged from the Docker runs.

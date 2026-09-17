@@ -84,12 +84,16 @@ def main():
         rclpy.spin(node)
     except (KeyboardInterrupt, ExternalShutdownException):
         pass
+    except Exception as exc:  # noqa: BLE001  e.g. RCLError once the context is shut down by SIGINT
+        print(f'recorder: spin ended with {type(exc).__name__}: {exc}', file=sys.stderr)
     finally:
         node.flush()
-        node.get_logger().info(
-            f'flushed {len(node.frontend)} front-end poses, '
-            f'{len(node.keyframes)} keyframes (seq {node.kf_seq})')
-        node.destroy_node()
+        print(f'recorder: flushed {len(node.frontend)} front-end poses, '
+              f'{len(node.keyframes)} keyframes (seq {node.kf_seq})', flush=True)
+        try:
+            node.destroy_node()
+        except Exception:  # noqa: BLE001
+            pass
         try:
             rclpy.try_shutdown()
         except Exception:  # noqa: BLE001

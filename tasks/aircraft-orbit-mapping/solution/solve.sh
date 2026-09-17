@@ -22,14 +22,12 @@
 #
 # Everything is computed at run time; nothing is precomputed.
 #
-# UNVERIFIED (Docker was not available on the authoring machine; this script was
-# written, linted and dry-checked only):
-#   - apt package names / rosdep resolution inside ros:humble-ros-base
-#   - colcon build time and memory of ndt_omp/scanmatcher with 4 cpus / 16 GB
-#   - Fast DDS shared-memory profile (fastdds_profile.xml) keeping 1.8 MB
-#     best-effort point clouds from being dropped inside the container
-#   - that PLAY_RATE=0.5 lets the NDT front-end process (nearly) every scan
-#   - run time (expected ~15-25 min in total)
+# Verified end to end: reward 1 on two Docker runs (Apple Silicon, linux/amd64 under
+# Rosetta, 6 CPU / 7 GB) and 3/3 runs on the Modal CI backend at the declared
+# 4 CPU / 16 GB (oracle ~10 min, verifier ~2 min; metrics identical to three
+# decimals across the three runs). Peak memory is the colcon build: two
+# concurrent cc1plus on the PCL-heavy targets need ~3 GB each, so BUILD_JOBS
+# stays at 2 with --parallel-workers 2 (~12 GB worst case at 4 CPUs).
 set -euo pipefail
 
 SOLUTION_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -168,9 +166,28 @@ done
 echo "[oracle] final /modified_path received (seq $(kf_seq)); map.pcd written"
 sleep 5   # map.pcd is written synchronously in the service callback; give the file a moment to close
 
-kill -INT "$REC_PID"; wait "$REC_PID" || true
-kill -INT "$SLAM_PID"; wait "$SLAM_PID" || true
+# Background jobs of a non-interactive bash start with SIGINT ignored, and
+# `ros2 launch` keeps that disposition, so a plain SIGINT never reaches it.
+# Escalate INT -> TERM -> KILL with a bounded wait at each step.
+stop_job() {  # stop_job <pid> <name>
+    local pid=$1 name=$2 sig deadline
+    [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null || return 0
+    for sig in INT TERM KILL; do
+        kill -s "$sig" "$pid" 2>/dev/null || break
+        deadline=$(( $(date +%s) + 30 ))
+        while kill -0 "$pid" 2>/dev/null && [ "$(date +%s)" -lt "$deadline" ]; do sleep 1; done
+        kill -0 "$pid" 2>/dev/null || break
+        echo "[oracle] $name did not exit on SIG$sig; escalating"
+    done
+    wait "$pid" 2>/dev/null || true
+}
+stop_job "$REC_PID" "recorder"
+stop_job "$SLAM_PID" "ros2 launch"
 REC_PID=""; SLAM_PID=""
+# the launch's child nodes may outlive it once it is killed rather than shut down
+pkill -TERM -f scanmatcher_node 2>/dev/null || true
+pkill -TERM -f graph_based_slam_node 2>/dev/null || true
+pkill -TERM -f robot_state_publisher 2>/dev/null || true
 ls -la "$OUT"
 grep -m1 -E '^POINTS' "$OUT/map.pcd"
 

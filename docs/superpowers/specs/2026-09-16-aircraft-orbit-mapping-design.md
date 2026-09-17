@@ -10,8 +10,7 @@ checks (22 static checks, 35-criterion rubric, Docker build, oracle = 1.0, nop =
 failure analysis within 7 days (by 2026-09-23).
 
 ## Task
-A ground robot orbited a parked business jet (Gulfstream V, N55FV — type NOT disclosed to
-the agent) on an open apron at ~16 m radius, recording 5 LiDARs (Hesai Pandar40P + 4 Livox
+A ground robot orbited a parked business jet (business jet; type and registration NOT disclosed to the agent) on an open apron at ~16 m radius, recording 5 LiDARs (Hesai Pandar40P + 4 Livox
 Mid-360, plus the fused cloud), Fixposition GNSS-INS, IMU, wheel odometry and TF. The agent
 must produce a metric, drift-free model of the aircraft.
 
@@ -26,7 +25,7 @@ Why it is hard for a good reason (all measured, see scratch/baselines):
 ## Agent environment
 - `FROM ros:humble-ros-base`; apt: rosbag2-storage-mcap, build tools; pip (pinned):
   numpy, scipy, open3d, mcap, mcap-ros2-support.
-- `/app/data/orbit.mcap` — April 2026 N55FV orbit, trimmed to: /hesai/points, /livox/lidar,
+- `/app/data/orbit.mcap` — April 2026 orbit recording, trimmed to: /hesai/points, /livox/lidar,
   /fused_points, /fixposition/{odometry_enu,odometry_llh,poiimu,fpa/corrimu},
   /odometry/wheels, /tf, /tf_static. Downloaded at image build from a public Hugging Face
   dataset with sha256 verification (files > 100 MB are not committed).

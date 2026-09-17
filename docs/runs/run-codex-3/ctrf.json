@@ -1,0 +1,77 @@
+{
+    "reportFormat": "CTRF",
+    "specVersion": "0.0.0",
+    "timestamp": "2026-09-17T00:55:21.477585+00:00",
+    "generatedBy": "pytest",
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "9.1.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 4,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1789606298361,
+            "stop": 1789606521477
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_outputs.py::test_files",
+                "status": "passed",
+                "duration": 94,
+                "start": 1789606298702,
+                "stop": 1789606298796,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_reaccumulation",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 145035,
+                "start": 1789606298796,
+                "stop": 1789606443831,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "trace": "reaccumulated = array([[-37.70019401,  13.64347991,   6.69628285],\n       [-37.992163  ,  13.82494703,   6.88041501],\n       [-38.9610...,   1.43306373],\n       [-55.7483559 ,  -0.40754921,   1.54319374],\n       [-55.95859549,  -0.54520861,   1.55374148]])\nreacc_alignment = AlignResult(transform=array([[-9.98204538e-01, -5.97334427e-02,  4.42896335e-03,\n        -3.98161310e+01],\n       [ 5....00e+00,  0.00000000e+00,  0.00000000e+00,\n         1.00000000e+00]]), fitness=0.58366, inlier_rmse=0.07442200374304866)\nreference = array([[-2.81791997, 14.76920033,  7.44430017],\n       [-2.83640003, 14.79740047,  7.51938009],\n       [-2.85228992, 1...2109985,  1.93651998],\n       [25.99699974, 14.69200039,  1.67340004],\n       [26.01490021, 14.74330044,  1.85388005]])\nthresholds = {'calibrated': True, 'tau_local_m': 0.1, 'tau_coverage_m': 0.2, 'junk_radius_m': 1.0, ...}\n\n    def test_reaccumulation(reaccumulated, reacc_alignment, reference, thresholds):\n        \"\"\"The trajectory is metric and drift-free: raw keyframes transformed by the\n        agent's interpolated poses, globally registered to the reference (yaw sweep\n        + ICP), reach local precision >= P1 and coverage >= C1.  Local precision is,\n        among the re-accumulated points within ``junk_radius_m`` (1 m) of the\n        reference, the fraction within ``tau_local_m`` (0.10 m) of it -- a smeared\n        trajectory thickens every surface and lowers it; coverage is the fraction of\n        reference points within ``tau_coverage_m`` (0.20 m) of the re-accumulation.\n        The junk fraction (points > 1 m from the reference, driven by the keyframe\n        crop rather than the trajectory) is reported but not gated here.\"\"\"\n        aligned = vl.transform_points(reacc_alignment.transform, reaccumulated)\n        m = vl.cloud_metrics(aligned, reference, thresholds[\"tau_local_m\"], thresholds[\"tau_coverage_m\"], thresholds[\"junk_radius_m\"])\n        _report(\"test_reaccumulation\", localprec=m.localprec, coverage=m.coverage, junk=m.junk, n_points=m.n_src,\n                n_near_reference=m.n_near, icp_fitness=reacc_alignment.fitness, icp_rmse=reacc_alignment.inlier_rmse)\n>       assert m.localprec >= thresholds[\"P1\"], (\n            f\"re-accumulation local precision@{thresholds['tau_local_m']} = {m.localprec:.3f} < P1 = {thresholds['P1']}\")\nE       AssertionError: re-accumulation local precision@0.1 = 0.684 < P1 = 0.72\nE       assert 0.6844132081098295 >= 0.72\nE        +  where 0.6844132081098295 = Metrics(localprec=0.6844132081098295, coverage=0.9927955020920503, junk=0.31497407392462273, n_src=396512, n_near=271621, n_ref=76480).localprec\n\ntest_outputs.py:142: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_outputs.py::test_aircraft_model",
+                "status": "passed",
+                "duration": 77603,
+                "start": 1789606443831,
+                "stop": 1789606521434,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_consistency",
+                "status": "passed",
+                "duration": 19,
+                "start": 1789606521435,
+                "stop": 1789606521454,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_cleanliness",
+                "status": "passed",
+                "duration": 21,
+                "start": 1789606521455,
+                "stop": 1789606521476,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            }
+        ]
+    }
+}

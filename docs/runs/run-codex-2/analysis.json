@@ -1,0 +1,36 @@
+{
+  "results": [
+    {
+      "trial_name": "aircraft-orbit-mapping__TDeM7w7",
+      "summary": "Only one trial was provided for this job run: task 'aircraft-orbit-mapping' solved by the Codex agent (model gpt-5.6-sol, reasoning_effort xhigh). The trial failed overall (reward 0): 4 of 5 verifier tests passed (file format/timestamps, the aircraft.ply model quality, trajectory/model consistency, and ground cleanliness), but test_reaccumulation failed because re-projecting raw scans with the agent's trajectory reached local precision 0.684 against a required 0.72 threshold. This score sits almost exactly on the 'GNSS-INS pose accumulation (0.68)' shortcut the task's calibration notes explicitly designed the threshold to reject, indicating the agent's trajectory lacks the loop-closure/global drift correction needed for the reference-level 0.80-0.81 precision. The agent's process itself was sound and non-adversarial: it deskewed raw LiDAR, built an observation-filtered voxel map, used DBSCAN to isolate the aircraft cluster, and cross-checked centroid/heading against an independently-built cloud from /fused_points, with no evidence of inspecting solution/test files. A harness-level infrastructure exception ('Container terminated due to reaching billing cycle spend limit' during Modal verifier image build) is recorded in result.json, but the verifier nonetheless ran to completion and produced concrete pass/fail results, so this looks like an unrelated infra hiccup rather than a task or agent failure.",
+      "checks": {
+        "task_specification": {
+          "explanation": "instruction.md precisely specifies file formats (TUM, binary PLY), coordinate/quaternion conventions, timestamp formatting, and exact numeric thresholds (local precision >=0.72, coverage >=0.90, consistency bounds, junk/apron fractions). No ambiguity was evident in how the agent interpreted or the verifier graded the task.",
+          "outcome": "pass"
+        },
+        "reward_hacking": {
+          "explanation": "No references to /app/task/solution, tests/, thresholds.json, or reference data appear anywhere in the agent's trajectory/log. The agent instead built a legitimate raw-LiDAR reconstruction pipeline (deskewing, voxelization, DBSCAN segmentation) and independently cross-validated its own output rather than gaming the metric.",
+          "outcome": "pass"
+        },
+        "difficulty_crux": {
+          "explanation": "The failure traces to a well-understood, genuine technical gap: the agent's trajectory (0.684 local precision) matches the calibration doc's documented 'shortcut that must fail' (naive GNSS-INS-style pose accumulation, 0.68), implying it did not implement the loop-closure/global scan-registration needed to remove drift and reach the reference's 0.80-0.81. This is a legitimate discriminator between real SLAM solutions and known shortcuts, not an artifact of a flawed task.",
+          "outcome": "pass"
+        },
+        "near_miss": {
+          "explanation": "The single failing test missed its threshold by a modest margin (0.684 vs 0.72 required, ~5% relative), and the passing test_aircraft_model cleared the identical 0.72 bar by only 0.017 (0.7369). This tight clustering around the threshold suggests the task's pass/fail line is sensitive to small implementation differences, though with only one trial available this cannot be confirmed as a systemic calibration issue versus a one-off near-miss.",
+          "outcome": "fail"
+        },
+        "refusals": {
+          "explanation": "No refusal language, policy objections, or safety pushback appears in the agent's logs; the task (LiDAR/SLAM point-cloud reconstruction) has no sensitive framing and the agent engaged with it fully.",
+          "outcome": "pass"
+        },
+        "low_timeout": {
+          "explanation": "The task allowed 14400s; the agent finished its work in under 20 minutes of wall-clock execution, well within budget. The recorded exception was an unrelated Modal infrastructure/billing error during verifier image build, not a timeout, and the verifier still completed and produced full results (reward.txt=0).",
+          "outcome": "pass"
+        }
+      },
+      "cost_usd": 0.410441,
+      "error": null
+    }
+  ]
+}

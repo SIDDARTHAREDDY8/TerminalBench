@@ -28,7 +28,7 @@ BASELINES = [
     ("orbit_aircraft_icp.pcd (+ICP refine)", BASELINE_DIR + "/orbit_aircraft_icp.pcd"),
     ("orbit_aircraft_pg.pcd (+pose graph)", BASELINE_DIR + "/orbit_aircraft_pg.pcd"),
     ("orbit_aircraft_v2.pcd", BASELINE_DIR + "/orbit_aircraft_v2.pcd"),
-    ("N55FV_accum_aircraft_enu.ply", BASELINE_DIR + "/N55FV_accum_aircraft_enu.ply"),
+    ("accum_aircraft_enu.ply", BASELINE_DIR + "/accum_aircraft_enu.ply"),
     ("aircraft_dense.pcd (tesla_test)", BASELINE_DIR + "/aircraft_dense.pcd"),
     ("reference vs itself (sanity)", REF),
 ]

@@ -1,5 +1,5 @@
 {
-  "calibrated": false,
+  "calibrated": true,
   "tau_local_m": 0.1,
   "tau_coverage_m": 0.2,
   "junk_radius_m": 1.0,
@@ -14,7 +14,7 @@
   "consistency_max_rotation_deg": 3.0,
   "ground_tau_m": 0.15,
   "max_ground_fraction": 0.02,
-  "_comment": "Calibrated natively 2026-09-16 (see scratch/calibrate/CALIBRATION.md); pending confirmation on Docker oracle repeats (oracle must pass with margin on 5 runs; all measured naive baselines must fail). P1/P2 = local precision: of the output points within junk_radius_m of the reference, the fraction within tau_local_m (re-accumulated keyframes / aircraft.ply). C1/C2 = coverage: fraction of reference points within tau_coverage_m of the output. junk_max = max fraction of aircraft.ply points farther than junk_radius_m from the reference. Measured so far (localprec@0.10 / coverage@0.20): fresh lidarslam 0.79 / 0.94-0.96, mentor map 0.89, GNSS accumulate 0.59, GNSS+ICP 0.57, GNSS+pose-graph 0.66, baselines coverage 0.74-0.89. See scratch/calibrate/baselines.md. ground_plane_ref = apron plane (a,b,c,d) in the reference frame, fitted on the mapping run's ground returns within 25 m of the aircraft (tilt 0.27 deg); reference min height above it 0.468 m; oracle model 1.6 % within 0.15 m.",
+  "_comment": "Calibrated on measured runs (record: the task README.md 'Calibration record' section and docs/CALIBRATION.md at the repository root). P1/P2 = local precision: of the output points within junk_radius_m of the reference, the fraction within tau_local_m (re-accumulated keyframes / aircraft.ply). C1/C2 = coverage: fraction of reference points within tau_coverage_m of the output. junk_max = max fraction of aircraft.ply points farther than junk_radius_m from the reference. Reference solution: local precision 0.80-0.81 / coverage 0.99 on both tests, junk 0.15, apron 0.0 % (3/3 identical runs on the CI backend and 2 Docker runs). Shortcuts that must fail: GNSS-INS pose accumulation 0.68 / 0.99 (fails P1) and its model 0.48-0.59 / 0.84-0.86 with 10.9 % apron; +per-frame ICP 0.57 / 0.82; +lightweight pose graph 0.66 / 0.74; uncropped scenes junk 0.96. ground_plane_ref = apron plane (a,b,c,d) in the reference frame, fitted on the mapping run's ground returns within 25 m of the aircraft (tilt 0.27 deg); the reference's lowest surface is 0.468 m above it.",
   "ground_plane_ref": [
     0.0045,
     -0.001,
