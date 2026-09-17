@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | Source recording | ground-robot sensor bag recorded 2026-04-01: one orbit of a parked business jet on an open apron (commercial platform; published with permission) |
-| Trim | `scratch/tools/trim_mcap.py` — copies the 10 topics below verbatim (schemas, channels, log/publish times, sequence numbers, QoS metadata, rosbag2 metadata record); zstd chunks |
+| Trim | `tools/data/trim_mcap.py` — copies the 10 topics below verbatim (schemas, channels, log/publish times, sequence numbers, QoS metadata, rosbag2 metadata record); zstd chunks |
 | Topics kept | `/fused_points` (1462), `/hesai/points` (1475), `/livox/lidar` (4408), `/fixposition/odometry_enu` (1474), `/fixposition/odometry_llh`, `/fixposition/poiimu`, `/fixposition/fpa/corrimu`, `/odometry/wheels` (7344), `/tf` (37933), `/tf_static` (1755) |
 | Topics dropped | all camera topics (`/camera_0x/*`), `/diagnostics`, `/rosout`, `/parameter_events` |
 | Duration / messages | 147.475 s / 88 428 |

@@ -420,8 +420,8 @@ def robust_align(
     seeds.sort(key=lambda r: (-r.fitness, r.inlier_rmse))
 
     best = None
-    for seed in seeds[:top_k]:
-        r = icp(src_c, ref_c, 3.0 * voxel_coarse, 100, seed.transform, tree_c)  # 0.3 m
+    for cand in seeds[:top_k]:  # named `cand` so it does not shadow the `seed` RNG parameter
+        r = icp(src_c, ref_c, 3.0 * voxel_coarse, 100, cand.transform, tree_c)  # 0.3 m
         r = icp(src_f, ref_f, 3.0 * voxel_fine, 200, r.transform, tree_f)  # 0.15 m
         if best is None or (r.fitness, -r.inlier_rmse) > (best.fitness, -best.inlier_rmse):
             best = r

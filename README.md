@@ -42,7 +42,7 @@ docs/CALIBRATION.md             measured oracle / baseline numbers behind the th
 docs/RUBRIC_SELF_REVIEW.md      manual pass over the 35 implementation-rubric criteria
 docs/instruction_facts.md       fact sheet the instruction.md was built from
 docs/data_provenance.md         how orbit.mcap and the reference data were produced
-docs/HANDOFF_MAC.md             step-by-step plan for the remaining (Docker / trial) phase, with progress notes
+docs/HANDOFF_MAC.md             running work log for the Docker/trial phase (internal notes, kept for provenance)
 docs/runs/                      CTRF reports and logs of the recorded runs
 docs/superpowers/specs/         design spec
 tools/                          data-prep tooling and the verifier unit tests
@@ -80,9 +80,11 @@ recording links back to this repository, so making it public would hand any agen
 
 Recorded plainly rather than buried:
 
-- **The codex adversarial trial is satisfied only by refusal.** OpenAI's API rejected the TB3 red-team brief on all three
-  attempts, across two backends, so that trial never exercised the verifier. The substantive anti-cheat evidence is the
-  claude-code adversarial trial (which probed hard and reported no bypass) plus the static analysis in `CHEAT_ANALYSIS.md`.
+- **Both adversarial trials hit model safety classifiers on the TB3 red-team brief.** OpenAI's API refused codex
+  outright on all three attempts, so that trial never exercised the verifier at all; claude-code ran but had one
+  reconnaissance command flagged (`api_refusal_category='cyber'`), forcing a mid-session model fallback. Both scored
+  zero and `harbor analyze` records `reward_hacking: pass` for the claude-code probe, but the anti-cheat claim rests on
+  that one partially degraded run plus the structural analysis in `CHEAT_ANALYSIS.md`, not on two clean adversarial runs.
 - **`harbor analyze` flags `near_miss` on three analyzed trials.** The closest trial missed the trajectory gate by 0.006.
   `FAILURE_ANALYSIS.md` quantifies this, explains why the gate still separates the two measured populations cleanly, and
   specifies the metric correction that should be made (and recalibrated from scratch) rather than moving the threshold.

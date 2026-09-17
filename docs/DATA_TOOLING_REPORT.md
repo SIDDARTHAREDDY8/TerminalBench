@@ -14,7 +14,7 @@ All tools stream the bag read-only (one pass each, 2–17 s per pass).
 ## 1. trim_mcap.py — validated on a 5 s slice
 
 ```
-python3 scratch/tools/trim_mcap.py --in <bag>.mcap --out scratch/data/orbit_slice5s.mcap \
+python3 tools/data/trim_mcap.py --in <bag>.mcap --out scratch/data/orbit_slice5s.mcap \
   --topics /hesai/points /livox/lidar /fused_points /fixposition/odometry_enu /fixposition/odometry_llh \
            /fixposition/poiimu /fixposition/fpa/corrimu /odometry/wheels /tf /tf_static \
   --start-sec 0 --duration-sec 5
@@ -69,7 +69,7 @@ better than the bag average), or 3.41 GB at the bag-wide ratio 0.441. Expect ~2.
 ## 2. extract_keyframes.py — `/fused_points`
 
 ```
-python3 scratch/tools/extract_keyframes.py --in <bag>.mcap --out scratch/data/keyframes.npz   # defaults: --n 100 --range 45 --voxel 0.05 --ground-margin 0.20
+python3 tools/data/extract_keyframes.py --in <bag>.mcap --out scratch/data/keyframes.npz   # defaults: --n 100 --range 45 --voxel 0.05 --ground-margin 0.20
 ```
 - frame_id **`base_link`**; fields `x@0 y@4 z@8` all FLOAT32, `point_step 12`, height 1, `is_dense False`, little-endian, no NaNs seen.
 - 1462 msgs, **151 472–152 256 points/msg** (median 151 968); header-stamp span 1775076638.101 → 1775076784.202
@@ -90,7 +90,7 @@ python3 scratch/tools/extract_keyframes.py --in <bag>.mcap --out scratch/data/ke
 ## 3. extract_gnss_traj.py — `/fixposition/odometry_enu`
 
 ```
-python3 scratch/tools/extract_gnss_traj.py --in <bag>.mcap --out scratch/data/gnss_enu.tum
+python3 tools/data/extract_gnss_traj.py --in <bag>.mcap --out scratch/data/gnss_enu.tum
 ```
 - **1474 poses**, frame_id **`map`** → child **`vrtk_link`** (so this is the VRTK antenna/POI body, NOT base_link;
   base_link = vrtk_link ⊕ URDF offset (−0.1736, 0, −0.4693) m, identity rotation). `map` sits on `FP_ENU0` (identity static TF)
@@ -111,7 +111,7 @@ python3 scratch/tools/extract_gnss_traj.py --in <bag>.mcap --out scratch/data/gn
 ## 4. TF content (`inspect_tf.py`) vs. handoff claim — CONFIRMED
 
 ```
-python3 scratch/tools/inspect_tf.py --in <bag>.mcap      # full table in scratch/data/tf_pairs.md
+python3 tools/data/inspect_tf.py --in <bag>.mcap      # full table in scratch/data/tf_pairs.md
 ```
 `/tf` (37 933 msgs, 257 Hz): `FP_ECEF→FP_POI` (10 Hz), `FP_POI→FP_IMUH` (200 Hz), `FP_POI→FP_POISH`, `map→odom`, `odom→vrtk_link` (10 Hz),
 `base_link→wheel_{1..4}_steer_link`, `wheel_i_steer_link→wheel_i_wheel_link` (16 Hz).
@@ -155,7 +155,7 @@ bag says FP_POI→FP_VRTK is identity — the two GNSS lever arms disagree by ~(
 ## 5. Smoke test — GNSS accumulation (`gnss_accumulate.py`)
 
 ```
-python3 scratch/tools/gnss_accumulate.py --keyframes scratch/data/keyframes.npz --traj scratch/data/gnss_enu.tum --out scratch/data/gnss_accum.ply
+python3 tools/data/gnss_accumulate.py --keyframes scratch/data/keyframes.npz --traj scratch/data/gnss_enu.tum --out scratch/data/gnss_accum.ply
 ```
 Pose at each keyframe stamp: linear xyz interp + Slerp on the 10 Hz `map→vrtk_link` poses (all 100 stamps inside the span),
 points moved base_link→vrtk_link by the URDF offset, then into `map`(ENU). 1 127 949 pts → **642 177 after 0.1 m voxel**,
@@ -166,7 +166,7 @@ bbox 39.8 × 40.0 × 12.9 m, z mass in 0–4 m with a tail to 8 m — an aircraf
 This only proves the data path (stamps ↔ poses ↔ frames); it is the naive baseline the verifier must reject.
 
 ## Files
-- tools (`scratch/tools/`): `trim_mcap.py`, `bag_stats.py`, `inspect_tf.py`, `extract_keyframes.py`, `extract_gnss_traj.py`, `gnss_accumulate.py`, this `REPORT.md`
+- tools (`tools/data/`): `trim_mcap.py`, `bag_stats.py`, `inspect_tf.py`, `extract_keyframes.py`, `extract_gnss_traj.py`, `gnss_accumulate.py`, this `REPORT.md`
 - data (`scratch/data/`, 107 MB): `orbit_slice5s.mcap` 83.0 MB, `keyframes.npz` 13.6 MB, `gnss_accum.ply` 15.4 MB, `gnss_enu.tum` 148 KB,
   `bag_stats.txt`, `tf_pairs.md`, `gnss_report.txt`, `keyframes_report.txt`, `accum_report.txt`
 Nothing committed (scratch/ is gitignored; the project dir is not a git repo).
