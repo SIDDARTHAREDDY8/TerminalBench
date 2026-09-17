@@ -55,9 +55,9 @@ tools/                          data-prep tooling and the verifier unit tests
 | 22 TB3 static checks | pass (with instruction.md and README sections in place) |
 | Verifier unit tests | 27/27 |
 | Task data published | done — HF dataset `pinkman9/aircraft-orbit-mapping`, hash pinned in the Dockerfile |
-| Docker build (environment + verifier images) | pass |
+| Docker build (environment + verifier images) | pass — including a from-scratch rebuild in the final end-to-end test |
 | Nop through the verifier | reward 0 (harbor on Modal + local Docker) |
-| Oracle through the verifier | reward 1 — 3/3 harbor runs on Modal (CI backend) + 2 local Docker runs |
+| Oracle through the verifier | reward 1 — 3/3 on Modal, 2 local Docker runs, and the clean-slate end-to-end test on the GCP VM |
 | GNSS-INS shortcut | reward 0 (calibration) |
 | Implementation rubric (`harbor exec` reviewer, sonnet-5) | pass — 32 / 0 fail / 3 n/a (`CHECKS.md`) |
 | `/run` trials — 3× claude-code opus-5 max | **3/3 reward 0** (trajectory 0.714 / 0.689 / 0.685 vs gate 0.72) |

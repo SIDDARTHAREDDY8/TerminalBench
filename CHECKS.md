@@ -90,3 +90,28 @@ Three attempts, verdicts in `docs/runs/rubric-review/` (`verdicts.json`, `verdic
 | 3 | 32 / 0 / 3 | n/a: `artifact_efficiency`, `verifier_execution_isolation`, `do_not_modify_enforced` — all correctly not applicable. |
 
 Static checks re-run after every change: 22/22. A manual pass over all 35 criteria is in `docs/RUBRIC_SELF_REVIEW.md`.
+
+## 7. Single end-to-end validation from a clean slate (2026-09-17)
+
+The definitive run: every Docker image and layer purged first, so the 3 GB recording is re-downloaded and both images
+rebuild from nothing. Executed on the GCP `e2-standard-4` VM (4 vCPU / 16 GB — the task's declared resources) with
+harbor's `docker` backend. Script: `~/work/final_test.sh`; log and CTRF reports: `docs/runs/final-e2e-test/`.
+
+```
+docker system prune -af --volumes          # 0 images remain, 93 GB free
+for c in tb3/scripts/checks/check-*.sh; do bash "$c" tasks/aircraft-orbit-mapping; done
+harbor run -p tasks/aircraft-orbit-mapping --agent oracle --env docker -o jobs --job-name final-oracle
+harbor run -p tasks/aircraft-orbit-mapping --agent nop    --env docker -o jobs --job-name final-nop
+```
+
+| step | result | time |
+|---|---|---|
+| static checks | **22 / 22** (`static_checks_vm.txt`) | 2 s |
+| oracle: image build from scratch + solve + verify | **reward 1** — re-accumulation 0.791 / 0.996, model 0.810 / 0.991, junk 0.13, apron 0.0 % | 21 min |
+| nop | **reward 0** | 1 min 23 s |
+
+The script's own log line reads `static 12/22` because the VM was missing a TOML parser for Python 3.10 and my transfer
+tarball carried macOS AppleDouble (`._*`) files that the canary check rightly rejected. Neither is a property of the
+task: the repository contains no such files (`git ls-files | grep '\._'` → none) and the checks pass 22/22 on the VM
+once `python3-tomli` is installed and the stray files removed, which is the `static_checks_vm.txt` figure above and
+matches the local result.

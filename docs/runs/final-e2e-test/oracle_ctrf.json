@@ -1,0 +1,74 @@
+{
+    "reportFormat": "CTRF",
+    "specVersion": "0.0.0",
+    "timestamp": "2026-09-17T09:12:55.086813+00:00",
+    "generatedBy": "pytest",
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "9.1.1"
+        },
+        "summary": {
+            "tests": 5,
+            "passed": 5,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1789636206243,
+            "stop": 1789636375086
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_outputs.py::test_files",
+                "status": "passed",
+                "duration": 75,
+                "start": 1789636206600,
+                "stop": 1789636206675,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_reaccumulation",
+                "status": "passed",
+                "duration": 115901,
+                "start": 1789636206675,
+                "stop": 1789636322576,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_aircraft_model",
+                "status": "passed",
+                "duration": 52493,
+                "start": 1789636322577,
+                "stop": 1789636375070,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_consistency",
+                "status": "passed",
+                "duration": 10,
+                "start": 1789636375070,
+                "stop": 1789636375080,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_cleanliness",
+                "status": "passed",
+                "duration": 4,
+                "start": 1789636375081,
+                "stop": 1789636375085,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            }
+        ]
+    }
+}
