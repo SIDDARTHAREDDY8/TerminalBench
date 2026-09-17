@@ -6,7 +6,7 @@ Configuration is the TB3 CI default (`.github/harbor-run-defaults.yml` at tb3 co
 Agent timeout is the task's 14 400 s. Infrastructure failures (rate limit, crash, container failure, timeout of the
 harness itself) are re-run and never counted as model failures.
 
-**Backends.** run-codex-1, run-codex-2, run-claude-1, run-claude-2 and cheat-codex-1 ran on Modal (the TB3 CI default).
+**Backends.** run-codex-1 and the first cheat-codex attempts ran on Modal (the TB3 CI default); run-codex-2, run-claude-1 and run-claude-2 started there but were superseded by VM re-runs after Modal's spend cap (below).
 Modal's free-tier spend cap was reached on 2026-09-16 evening, so run-claude-3, run-codex-3 and cheat-claude-1 ran with
 harbor's `docker` backend (the other backend the CI supports) on a GCP `e2-standard-4` VM — 4 vCPU / 16 GB, Ubuntu 22.04
 x86-64, Docker 29 — i.e. the task's declared resources, with the same agents, models, flags and prompts.
@@ -34,7 +34,8 @@ harbor analyze jobs/run-claude-N -m sonnet -r ../tb3/docs/prompts/trial-analysis
 | run-claude-2 *(Modal, superseded)* | claude-code / opus-5 max | 0 (hand-scored) | agent ~2 h | 4/5 | trajectory 0.689, model 0.722 / 0.968. Harbor never scored it (Modal spend cap); kept as evidence, **not counted** |
 | run-claude-3 | claude-code / opus-5 max (GCP VM, docker backend) | **0** | agent ~1 h 40 m, verifier 4 min | 3/5 (trajectory and model tests fail) | trajectory localprec 0.685 (gate 0.72); model 0.573 / 0.996, junk 0.05, apron 0.0 %; 948 k points |
 | run-codex-1 | codex / gpt-5.6-sol xhigh | **0** | agent 16 min 55 s, verifier 3 min 28 s | 3/5 (files, consistency, cleanliness) | trajectory localprec 0.684 (gate 0.72), model 0.659 (gate 0.72); coverage 0.99 both; 2.45 M input tokens |
-| run-codex-2 | codex / gpt-5.6-sol xhigh | **0** | agent 19 min 49 s; verifier re-run locally (see note) | 4/5 (trajectory test fails) | trajectory localprec 0.684 (gate 0.72); model 0.737 / 0.955, junk 0.06 — model gate passed, trajectory gate not |
+| run-codex-2rerun | codex / gpt-5.6-sol xhigh (GCP VM, docker backend) | **0** | harbor-scored, 0 errors | 4/5 (trajectory test fails) | trajectory localprec 0.684 (gate 0.72); model 0.796 / 0.917, junk 0.18 — model gate passed, trajectory gate not |
+| run-codex-2 *(Modal, superseded)* | codex / gpt-5.6-sol xhigh | 0 (hand-scored) | agent 19 min 49 s | 4/5 | trajectory 0.684, model 0.737 / 0.955. Harbor never scored it (Modal spend cap); kept as evidence, **not counted** |
 | run-codex-3 | codex / gpt-5.6-sol xhigh (GCP VM, docker backend) | **0** | env 5 min 29 s, agent 14 min 37 s, verifier 4 min 29 s | 4/5 (trajectory test fails) | trajectory localprec 0.684 (gate 0.72); model 0.773 / 0.966, junk 0.04 |
 | cheat-claude-1 | claude-code / opus-5 max (adversarial, GCP VM) | **0** | agent 7 min 09 s | verifier ran, wrote reward 0 | probed for exploits, wrote **no deliverables**, reported "no credible bypass exists"; see CHEAT_ANALYSIS.md |
 | cheat-codex-1 | codex / gpt-5.6-sol xhigh (adversarial) | **0** | ~20 s (×3 attempts: Modal ×2, GCP VM ×1) | verifier ran, wrote reward 0 | OpenAI API refused the red-team brief as a cybersecurity risk on all three attempts, across both backends and both auth paths (`AgentSafetyRefusalError`); see CHEAT_ANALYSIS.md |
@@ -50,12 +51,12 @@ reversal were wrong. Recovered artifacts were scored with the identical verifier
 `CLAUDE_FORCE_OAUTH=1` in the host environment instead, which harbor's claude-code agent reads the same way and which
 leaves artifacts clean.
 
-**Note on run-codex-2 scoring.** The agent phase completed normally on Modal and both artifacts were downloaded, but
-Modal terminated the verifier-image build with "Container terminated due to reaching billing cycle spend limit" (the
-workspace's monthly cap; the image had to be rebuilt because `tests/thresholds.json`'s comment had changed). The
-downloaded artifacts were scored on the same Mac with the identical verifier image (`aom-tests`, built from the same
-`tests/` directory) — the verifier is deterministic and data-only, so the result is the one Modal would have produced.
-CTRF: `docs/runs/run-codex-2/ctrf.json`; Modal's exception: `docs/runs/run-codex-2/modal_exception_tail.txt`.
+**On the three superseded Modal runs.** For `run-codex-2`, `run-claude-1` and `run-claude-2` the agent phase completed
+normally and the artifacts were downloaded, but Modal terminated the verifier-image build at its free-tier spend cap, so
+harbor recorded `ImageBuildError` and wrote no reward. Those artifacts were scored by hand with the identical verifier
+image and the numbers are kept in `docs/runs/` for comparison, but **none of them is counted**: the assessment excludes
+container failures from being model failures. Each was re-run end to end on the GCP VM, and those three re-runs —
+`run-codex-2rerun`, `run-claude-1rerun`, `run-claude-2rerun` — are the reported results, all harbor-scored with 0 errors.
 
 
 ## Summary — requirement check
