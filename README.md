@@ -72,9 +72,10 @@ SHA-256 (`docs/data_provenance.md`).
 ## Repository visibility
 
 This repository is **private** and must stay private until the assessment has been reviewed. `tests/reference/aircraft_ref.ply`
-(the hidden ground-truth model) and `tests/thresholds.json` are committed here, and the public dataset card that hosts the
-recording links back to this repository, so making it public would hand any agent with internet access the answer. See
-`CHEAT_ANALYSIS.md`.
+(the hidden ground-truth model) and `tests/thresholds.json` are committed here, so making it public would hand any agent with
+internet access the answer. The public dataset card that hosts the recording previously linked back here; it was rewritten on
+2026-09-17 to describe only the sensor data, with no repository link and no indication the recording belongs to a benchmark
+task. See `CHEAT_ANALYSIS.md`.
 
 ## Known limitations
 
