@@ -1,0 +1,2 @@
+"result":"You've hit your session limit · resets 5am (UTC)"
+(same failure as run-claude-1rerun-quota; both were launched concurrently and exhausted the shared subscription quota)

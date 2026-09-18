@@ -1,0 +1,43 @@
+{
+    "id": "97e97cd5-899a-4478-835e-7ac1b0043cdd",
+    "started_at": "2026-09-17T03:30:57.931018",
+    "updated_at": "2026-09-17T04:02:55.452205",
+    "finished_at": "2026-09-17T04:02:55.452205",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 1,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "claude-code__claude-opus-5__adhoc": {
+                "n_trials": 1,
+                "n_errors": 1,
+                "metrics": [
+                    {
+                        "mean": 0.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "reward": {
+                        "0.0": [
+                            "aircraft-orbit-mapping__Aj4NKCD"
+                        ]
+                    }
+                },
+                "exception_stats": {
+                    "ApiRateLimitError": [
+                        "aircraft-orbit-mapping__Aj4NKCD"
+                    ]
+                }
+            }
+        },
+        "n_input_tokens": 2991458,
+        "n_cache_tokens": 2895945,
+        "n_output_tokens": 67561,
+        "cost_usd": 4.091677499999999
+    }
+}

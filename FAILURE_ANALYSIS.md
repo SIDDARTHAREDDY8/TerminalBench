@@ -107,7 +107,7 @@ guide warns against, the thresholds were left as calibrated. A future revision c
 (reference solution 0.80–0.81 on five runs) to restore a symmetric margin; this is recorded here as a known design
 observation, not applied.
 
-## run-claude-1 — claude-code / opus-5 max — reward 0 (near miss: 0.7138 vs the 0.72 gate)
+## run-claude-1 *(Modal, superseded — harbor never scored it; kept for the near-miss analysis)* — 0.7138 vs the 0.72 gate
 
 **What it did (~2 h).** The only trial so far to engage the crux. It reverse-engineered `/fused_points` as a raw
 concatenation (Hesai block matching `/hesai/points` through the URDF `base_link→hesai` transform "to 1e-7 m", then four
@@ -133,7 +133,7 @@ miss*, and by TB3's own definition (`near_miss`: "agents are reaching substantiv
 defeated by the verifier's threshold rather than the conceptual challenge") this one trial is close enough to warrant
 the flag. See "Threshold margin" below once all claude trials are in.
 
-## run-claude-2 — claude-code / opus-5 max — reward 0 (crux failure)
+## run-claude-2 *(Modal, superseded — harbor never scored it)* — 0.689 vs the 0.72 gate
 
 **What it did (~2 h, 35 shell commands).** A different and more ambitious attack than trial 1: it wrote its own
 refinement stack (`core.py`, `refine.py`, `ground2.py`, `sharp.py`) and ran *six* successive rounds of pose refinement
@@ -182,6 +182,41 @@ incorrect mental model of the data and then trusting artifacts it attributed to 
 
 **Verdict.** Genuine crux failure; no near-miss (0.035 below the gate on the trajectory, 0.147 below on the model).
 
+## run-claude-1rerun — claude-code / opus-5 max — reward 0 (counted trial; trajectory 0.705, model coverage 0.880)
+
+**What it did (2 h 12 m, 91 shell commands).** The most thorough engineering of any trial. It bypassed the ROS 2
+decoder entirely, writing its own CDR parser so the 2.9 GB recording could be read in about 20 s, then cached all 1462
+clouds — 110 M points — with a per-point time offset and sensor tag. It verified the fused cloud's internal layout
+byte-for-byte (`[72000 hesai][livox front][left][right][rear]`, no deskew applied by the fusion node), recovered
+per-point timestamps from the source topics, and motion-compensated on that basis. Extraction used an 8-neighbour
+sparsity filter to strip scatter noise and self-hit arcs, then DBSCAN with a proximity/elevation merge to recover the
+vertical fin.
+
+**What the verifier saw.** Trajectory 0.705 (gate 0.72). Model precision 0.817 — the second-sharpest of any trial —
+but coverage 0.880 against the 0.90 gate, on 167 266 points. 3/5 pass.
+
+**The failure mode is the opposite of codex's.** Where the codex trials submitted smeared but complete models, this one
+filtered so aggressively that it removed real surface: its noise rejection and its clustering merge were tuned by eye
+against its own reconstruction, with no ground truth to say when trimming had gone too far. It is a sharper model of
+less aeroplane.
+
+## run-claude-2rerun — claude-code / opus-5 max — reward 0 (counted trial; trajectory 0.707, model coverage 0.878)
+
+**What it did (1 h 55 m, 98 shell commands).** It diagnosed the deskewing problem more precisely than any other run:
+the 10 Hz GNSS attitude is too coarse to motion-compensate with, because "angular accelerations reach 240 °/s², so
+slerp between 10 Hz samples errors by up to 0.3° ≈ 8 cm at 15 m", and it therefore built a continuous-time trajectory
+at 200 Hz. Extraction dropped a 5×3 m ground vehicle parked at the nose while keeping the landing gear. It also tried a
+ray-casting free-space filter, found it "carved away a whole wing (thin surfaces seen edge-on by a 1° beam grid)", and
+abandoned it — a correct diagnosis of a real failure mode.
+
+**What the verifier saw.** Trajectory 0.707 (gate 0.72). Model precision 0.833 — the sharpest of all trials — coverage
+0.878 against the 0.90 gate. 3/5 pass. Same shape of failure as the trial above.
+
+**Its self-measurements were excellent and still not enough.** Local surface thickness 1.9 cm on the wing, model
+self-consistency 0.958 precision against independent scan halves, zero points within 0.15 m of the apron. Every
+quantity it could measure without ground truth looked good; the two it could not measure — absolute pose accuracy and
+completeness against the true surface — are the two that failed.
+
 # Threshold margin and the `near_miss` flag — an honest assessment
 
 `harbor analyze` marks `near_miss` **fail** on both completed opus-5 trials (0.714 and 0.689 against P1 = 0.72), with
@@ -217,9 +252,19 @@ the same data by registering each scan against a map assembled only from scans a
 verdict "conceptually beyond reach" is not what the numbers say — the numbers say the agent got most of the way with
 local refinement and did not do the one thing (global loop closure) that closes the rest.
 
-## The real weakness the agent found — a metric artifact, not a threshold error
+## The real weakness the agents found — a metric artifact, not a threshold error
 
-Trial 1 identified something the calibration did not: `localprec`'s denominator is every re-accumulated point within
+**Four independent agents measured this, by different routes, and agreed.** `run-claude-1rerun`: "~31 % of the points
+within 1.0 m of the aircraft surface are apron points under the fuselage, which no trajectory can place on the
+aircraft. If the grader's in-band set includes them, they pull the headline precision down to ~0.63 regardless of
+trajectory quality; if it excludes ground, the figure is 0.88." `run-claude-2rerun`: "apron points under the landing
+gear enter the denominator with zero precision and drag the number to ≈0.62 … for points above 0.45 m the same
+trajectory scores 0.834." The superseded `run-claude-1` reached the same conclusion, and the adversarial
+`cheat-claude-public` recorded it independently in its own notes ("apron-under-aircraft returns are the precision
+killer for the honest path"). Convergent measurement from four agents, none of which could see the reference, is much
+stronger evidence than a single near-miss.
+
+The underlying mechanism: `localprec`'s denominator is every re-accumulated point within
 `junk_radius_m` = 1.0 m of the reference, and the hidden reference's lowest surface is 0.468 m above the apron.
 Ground returns in the halo under the fuselage and landing gear therefore fall inside that radius and score 0 no matter
 how good the poses are. The agent measured this as roughly 25 % of its in-radius points and correctly predicted the
