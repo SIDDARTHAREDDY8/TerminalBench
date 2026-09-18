@@ -1,0 +1,27 @@
+[01:33] static checks
+  static: 22/22
+[01:33] oracle (rebuilds the env image with the renamed URDF)
+  1/1 Mean: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:20:04 0:00:00
+adhoc • oracle
+┏━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━┓
+┃ Trials ┃ Exceptions ┃  Mean ┃
+┡━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━┩
+│      1 │          0 │ 1.000 │
+└────────┴────────────┴───────┘
+
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 1.0    │     1 │
+└────────┴───────┘
+
+Job Info
+Total runtime: 20m 4s
+Results written to 
+/home/siddarthareddychinthala/work/jobs/rename-oracle/result.json
+Inspect results by running `harbor view /home/siddarthareddychinthala/work/jobs`
+Share results by running `harbor upload 
+/home/siddarthareddychinthala/work/jobs/rename-oracle`
+
+  oracle reward: 1
+[01:53] DONE

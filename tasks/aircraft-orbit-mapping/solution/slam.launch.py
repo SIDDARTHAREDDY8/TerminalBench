@@ -47,7 +47,7 @@ def generate_launch_description():
         output='screen')
 
     return LaunchDescription([
-        DeclareLaunchArgument('urdf', default_value='/app/data/itrek_frames.urdf'),
+        DeclareLaunchArgument('urdf', default_value='/app/data/robot_frames.urdf'),
         DeclareLaunchArgument('params_file'),
         DeclareLaunchArgument('input_cloud', default_value='/fused_points'),
         rsp, scanmatcher, graphslam,

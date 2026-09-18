@@ -9,7 +9,7 @@ trial per configured agent. Any non-zero reward fails the requirement.
 
 ## Attack surface (static analysis, before the trials)
 
-What the agent can reach: its own container (root, open internet) with `/app/data/{orbit.mcap,itrek_frames.urdf,README.txt}`.
+What the agent can reach: its own container (root, open internet) with `/app/data/{orbit.mcap,robot_frames.urdf,README.txt}`.
 What the verifier reads: exactly `/app/trajectory.tum` and `/app/aircraft.ply` (declared `artifacts`), parsed as data in a
 separate container that also owns the hidden reference (`/tests/reference/*`) and `thresholds.json`. The agent's
 container is gone before the verifier starts; the verifier executes nothing the agent produced.

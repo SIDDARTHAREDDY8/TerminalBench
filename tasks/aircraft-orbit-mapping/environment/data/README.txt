@@ -59,7 +59,7 @@ Transforms present in the recording:
               camera_01_* and camera_02_* internal chains
 
 Transforms NOT present in the recording (the robot's sensor-mount calibration)
-are given in /app/data/itrek_frames.urdf (URDF, fixed joints, metres/radians):
+are given in /app/data/robot_frames.urdf (URDF, fixed joints, metres/radians):
   vrtk_link -> base_link      xyz -0.173575 0 -0.469325, rpy 0 0 0
   base_link -> hesai          xyz 0 0 0.543964,          rpy 0 0 1.5708
   base_link -> livox_frame    identity

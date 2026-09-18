@@ -115,3 +115,18 @@ tarball carried macOS AppleDouble (`._*`) files that the canary check rightly re
 task: the repository contains no such files (`git ls-files | grep '\._'` → none) and the checks pass 22/22 on the VM
 once `python3-tomli` is installed and the stray files removed, which is the `static_checks_vm.txt` figure above and
 matches the local result.
+
+## 8. Re-validation after the URDF rename (2026-09-18)
+
+The robot's calibration file was renamed from a vendor-specific name to `robot_frames.urdf`, with the robot name and
+five sensor-mount joints renamed to match. That file ships inside the agent container and is referenced by
+`instruction.md`, `environment/Dockerfile`, `solution/solve.sh` and `solution/slam.launch.py`, so the task was
+re-validated end to end on the GCP VM rather than assumed intact.
+
+| step | result |
+|---|---|
+| static checks | 22 / 22 |
+| oracle (environment image rebuilt with the renamed file) | **reward 1** — re-accumulation 0.812 / 0.996, model 0.813 / 0.992, junk 0.14, apron 0.0 % |
+
+Evidence: `docs/runs/rename-oracle/`. The 2.9 GB recording was also scanned in full for the old identifier: zero
+matches, so no frame name, schema or metadata record in the published dataset carries it.

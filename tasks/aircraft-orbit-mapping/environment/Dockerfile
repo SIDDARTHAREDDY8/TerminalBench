@@ -36,6 +36,6 @@ RUN mkdir -p /app/data \
     && curl -fL --retry 5 --retry-delay 15 -o /app/data/orbit.mcap "$BAG_URL" \
     && echo "${BAG_SHA256}  /app/data/orbit.mcap" | sha256sum -c -
 
-COPY data/itrek_frames.urdf data/README.txt /app/data/
+COPY data/robot_frames.urdf data/README.txt /app/data/
 
 WORKDIR /app

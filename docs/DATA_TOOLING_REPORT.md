@@ -128,16 +128,16 @@ Note: `/livox/lidar` messages carry frame_ids `livox_frame_front/rear/left/right
 while the URDF names the links `livox_front/rear/left/right` (+ a `livox_frame` at base_link identity). That naming mismatch
 matters only if someone maps raw /livox/lidar; `/fused_points` is already in base_link.
 
-### `itrek_frames.urdf` (robot `i-trek`, mesh-free) — fixed joints
+### `robot_frames.urdf` (robot, mesh-free) — fixed joints
 | joint | parent → child | xyz (m) | rpy (rad) |
 |---|---|---|---|
 | vrtk_to_base_link | **vrtk_link → base_link** | −0.173575 0 −0.469325 | 0 0 0 |
-| itrek_lidar_hesai_to_base_link | base_link → hesai | 0 0 0.543964 | 0 0 1.5708 |
+| lidar_hesai_to_base_link | base_link → hesai | 0 0 0.543964 | 0 0 1.5708 |
 | livox_frame_to_base_link | base_link → livox_frame | 0 0 0 | 0 0 0 |
-| itrek_livox_front_to_base_link | base_link → livox_front | 0.428808 0 0.365184 | −0.872665 0 −1.5708 |
-| itrek_livox_rear_to_base_link | base_link → livox_rear | −0.428808 0 0.365184 | −0.872665 0 1.5708 |
-| itrek_livox_left_to_base_link | base_link → livox_left | 0 0.349484 0.355127 | −0.872665 0 0 |
-| itrek_livox_right_to_base_link | base_link → livox_right | 0 −0.349484 0.355127 | 0.872665 0 0 |
+| livox_front_to_base_link | base_link → livox_front | 0.428808 0 0.365184 | −0.872665 0 −1.5708 |
+| livox_rear_to_base_link | base_link → livox_rear | −0.428808 0 0.365184 | −0.872665 0 1.5708 |
+| livox_left_to_base_link | base_link → livox_left | 0 0.349484 0.355127 | −0.872665 0 0 |
+| livox_right_to_base_link | base_link → livox_right | 0 −0.349484 0.355127 | 0.872665 0 0 |
 | base_link_to_camera_01_link | base_link → camera_01_link | 0.453676 0.04755 0.282290 | 0 −0.034907 0 |
 | camera_01_optical_joint | camera_01_link → camera_01_rgb_optical_frame | 0 | −1.5708 0 −1.5708 |
 | base_link_to_camera_02_link | base_link → camera_02_link | 0.345673 0.04755 0.371726 | 0 −1.0472 0 |

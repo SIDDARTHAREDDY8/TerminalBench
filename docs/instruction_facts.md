@@ -9,7 +9,7 @@ Numeric thresholds are the calibrated values in `tests/thresholds.json`
 
 - `/app/data/orbit.mcap` — ROS 2 Humble recording (MCAP, zstd), ~147 s. A ground
   robot drove one orbit around a parked aircraft on an open apron.
-- `/app/data/itrek_frames.urdf` — the robot's sensor-mount calibration (URDF, fixed
+- `/app/data/robot_frames.urdf` — the robot's sensor-mount calibration (URDF, fixed
   joints), including the transforms that the recording does not contain.
 - `/app/data/README.txt` — topic list, message types, frame ids, units.
 - Topics in the recording: `/fused_points` (sensor_msgs/PointCloud2, `base_link`,

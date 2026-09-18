@@ -29,7 +29,7 @@ Why it is hard for a good reason (all measured, see scratch/baselines):
   /fused_points, /fixposition/{odometry_enu,odometry_llh,poiimu,fpa/corrimu},
   /odometry/wheels, /tf, /tf_static. Downloaded at image build from a public Hugging Face
   dataset with sha256 verification (files > 100 MB are not committed).
-- `/app/data/itrek_frames.urdf` — robot sensor-mount calibration.
+- `/app/data/robot_frames.urdf` — robot sensor-mount calibration.
 - `/app/data/README.txt` — topics, frames, units. No solver, no hints.
 
 ## Deliverables (agent)

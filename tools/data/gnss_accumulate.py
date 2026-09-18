@@ -7,7 +7,7 @@ import numpy as np
 import open3d as o3d
 from scipy.spatial.transform import Rotation as R, Slerp
 
-# from itrek_frames.urdf: joint vrtk_to_base_link  parent=vrtk_link child=base_link
+# from robot_frames.urdf: joint vrtk_to_base_link  parent=vrtk_link child=base_link
 T_VRTK_BASE_XYZ = np.array([-0.173575, 0.0, -0.469325])
 
 

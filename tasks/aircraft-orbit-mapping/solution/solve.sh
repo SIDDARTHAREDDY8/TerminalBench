@@ -32,7 +32,7 @@ set -euo pipefail
 
 SOLUTION_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BAG="${BAG:-/app/data/orbit.mcap}"
-URDF="${URDF:-/app/data/itrek_frames.urdf}"
+URDF="${URDF:-/app/data/robot_frames.urdf}"
 WS="${WS:-/root/ws}"
 OUT="${OUT:-/root/slam_out}"
 LOGS="${LOGS:-/root/solve_logs}"
