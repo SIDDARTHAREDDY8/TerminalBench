@@ -219,32 +219,35 @@ completeness against the true surface — are the two that failed.
 
 # Threshold margin and the `near_miss` flag — an honest assessment
 
-`harbor analyze` marks `near_miss` **fail** on both completed opus-5 trials (0.714 and 0.689 against P1 = 0.72), with
-"the P1=0.72 threshold may be miscalibrated relative to what a well-executed solution can realistically achieve". TB3's
-own guidance says that when multiple trials fail this check, the task may look harder than it is. That flag deserves a
-direct answer rather than a threshold edit, so here is the full picture.
+`harbor analyze` marks `near_miss` **fail** on the opus-5 trials it analyzed (0.714 and 0.689 against P1 = 0.72 — the
+superseded Modal runs; the counted re-runs land at 0.705 and 0.707), with "the P1=0.72 threshold may be miscalibrated
+relative to what a well-executed solution can realistically achieve". TB3's own guidance says that when multiple trials
+fail this check, the task may look harder than it is. That flag deserves a direct answer rather than a threshold edit,
+so here is the full picture.
 
 ## Where every measured trajectory actually lands
 
 | trajectory | local precision @ 0.10 m |
 |---|---|
-| reference solution (5 runs: 3 Modal, 2 Docker) | 0.805 – 0.813 |
+| reference solution (6 runs: 3 Modal, 2 Docker, 1 post-rename) | 0.805 – 0.813 |
 | **P1 gate** | **0.72** |
-| opus-5 trial 1 — GNSS-INS + 3× motion-compensated scan-to-map ICP | 0.714 |
-| opus-5 trial 2 — GNSS-INS + 6 refinement rounds + Livox self-calibration | 0.689 |
+| `run-claude-1rerun` — GNSS-INS + own CDR decoder, per-point timing, motion-compensated ICP | 0.705 |
+| `run-claude-2rerun` — GNSS-INS + 200 Hz continuous-time trajectory | 0.707 |
+| `run-claude-3` — GNSS-INS, refinement judged unnecessary | 0.685 |
+| `run-codex-1/2/3` — GNSS-INS poses, no refinement | 0.684 (×3) |
+| *(superseded Modal runs, harbor never scored them: 0.714 and 0.689)* | — |
 | GNSS-INS + lightweight pose graph (author baseline) | 0.66 |
-| gpt-5.6-sol trials 1–3 — GNSS-INS poses, no refinement | 0.684 (×3) |
 | GNSS-INS + per-frame ICP refine (author baseline) | 0.57 |
 
-Two facts matter. First, the gate separates the two populations it was built to separate: every non-SLAM trajectory
-measured — six agent trials and four author baselines — lands at or below 0.714, and every loop-closed SLAM run lands at
-or above 0.805. There is no overlap. Second, the gate sits 0.036 above the naive baseline but 0.09 below the reference
-solution: it is placed nearer the failure population than the success population, which is why a strong non-SLAM run can
-approach it.
+Two facts matter. First, the gate separates the two populations it was built to separate: every trajectory built by
+refining the GNSS-INS poses — six counted agent trials, two superseded ones and four author baselines — lands at or
+below 0.714, and every run using an incremental scan-matching front-end lands at or above 0.805. There is no overlap.
+Second, the gate sits 0.036 above the naive baseline but 0.09 below the reference solution: it is placed nearer the
+failure population than the success population, which is why a strong refinement run can approach it.
 
-## Is 0.714 "a substantively working solution"?
+## Is 0.705–0.714 "a substantively working solution"?
 
-Partly. Trial 1's refinement is real work and real improvement: +0.030 over the unrefined GNSS-INS poses, about a third
+Partly. That refinement is real work and real improvement: +0.02 to +0.03 over the unrefined GNSS-INS poses, roughly a third
 of the distance from the baseline to the reference. But it is not the solution the task asks for. It refines *against a map pre-built from the
 GNSS poses*, so the smear is already in the target and ICP converges into it; its own sharpness/consistency checks are
 self-referential and cannot observe the residual; and it remains 0.09 short of what the reference pipeline achieves on

@@ -26,10 +26,14 @@ run: local precision at 10 cm (drift/smear), coverage at 20 cm (completeness), p
 frame-consistency, apron-contamination and clutter gates. Reward is binary.
 
 Why it is hard for a good reason: the open apron has too few features for scan-to-scan
-odometry, and GNSS-INS heading noise over a 17 m lever arm smears every naive accumulation —
-all measured shortcuts reach ≤ 0.68 local precision against the 0.72 gate, while a correctly
-configured loop-closed SLAM reaches 0.80. The agent cannot see the reference, so it cannot
-tell "looks like a jet" from "passes".
+odometry, and GNSS-INS heading noise over a 17 m lever arm smears every naive accumulation.
+The author-measured baselines reach ≤ 0.68 local precision against the 0.72 gate; the agent
+trials did better with their own refinement, topping out at 0.707, and still fell short; the
+reference solution reaches 0.80–0.81. What closes that gap is an incremental scan-matching
+front-end — registering each scan against a map assembled from the scans already placed —
+not the pose-graph back-end, which accepts no loop closures on this single-orbit recording
+(see `docs/CALIBRATION.md` and `FAILURE_ANALYSIS.md`). The agent cannot see the reference, so
+it cannot tell "looks like a jet" from "passes".
 
 ## Layout
 
@@ -61,7 +65,7 @@ tools/                          data-prep tooling and the verifier unit tests
 | Oracle through the verifier | reward 1 — 3/3 on Modal, 2 local Docker runs, and the clean-slate end-to-end test on the GCP VM |
 | GNSS-INS shortcut | reward 0 (calibration) |
 | Implementation rubric (`harbor exec` reviewer, sonnet-5) | pass — 32 / 0 fail / 3 n/a (`CHECKS.md`) |
-| `/run` trials — 3× claude-code opus-5 max | **3/3 reward 0** (trajectory 0.714 / 0.689 / 0.685 vs gate 0.72) |
+| `/run` trials — 3× claude-code opus-5 max | **3/3 reward 0** (trajectory 0.705 / 0.707 / 0.685 vs gate 0.72) |
 | `/run` trials — 3× codex gpt-5.6-sol xhigh | **3/3 reward 0** (trajectory 0.684 ×3) |
 | `/cheat` trial — claude-code opus-5 max | **reward 0** — no bypass found, no deliverables written |
 | `/cheat` re-run after publication — claude-code opus-5 max | **reward 0** — engineered an input-tampering exploit (rewrote the recording so the verifier would re-project a planted cloud); defeated because the verifier reads its own baked keyframes |

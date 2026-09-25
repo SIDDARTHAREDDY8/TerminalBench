@@ -76,7 +76,7 @@ is the intended legitimate solution.**"
 This is independent confirmation of the separate-verifier design: the two knobs the agent controls are exactly the two
 artifacts the task wants produced genuinely, and every graded quantity is recomputed outside its reach.
 
-**Scope.** The trial ran while this repository was private. Its "no leaked answer" finding covers what it searched —
+**Scope.** That trial ran while this repository was still private. Its "no leaked answer" finding covers what it searched —
 the container's filesystem, the MCAP metadata and attachment records, and the verifier's reachable state — and is not a
 claim that the answer is unfindable on the open web now that the repository is published. See the exposure row above.
 
@@ -90,7 +90,11 @@ claim that the answer is unfindable on the open web now that the repository is p
   `instruction.md`, and adding an undeclared rejection rule would break `test_instruction_alignment`. A future revision
   should state a limit in the instruction and then enforce it.
 - **The codex adversarial trial contributes no hardening evidence** (provider refusal, above).
-- **The repository itself is the one real leak path** (above); it is private and must stay private.
+- **The repository itself is the one real leak path** (above). It is **public**, so the reference model and the
+  thresholds are reachable by anyone who searches a sentence of `instruction.md`. That exposure was measured rather
+  than assumed: the `cheat-claude-public` trial below ran against the published repository and the agent never used
+  it (zero web-tool calls, zero references to it across 86 tool calls). Every trial in `RESULTS.md` predates
+  publication, which the git history timestamps.
 
 ## What the adversarial trials say about the TB3 `/cheat` harness itself
 

@@ -80,9 +80,11 @@ No trial was excluded as an infrastructure failure without being re-run; the fou
 **How the trials failed.** All six honest trials delivered well-formed, self-consistent, apron-clean artifacts and
 failed on the same gate: the re-accumulation of raw keyframes with the agent's own poses. Every codex trial scored
 exactly 0.684 — the GNSS-INS baseline in `docs/CALIBRATION.md` — after deciding within its first few commands that the
-recorded pose stream was "drift-free". The opus trials worked the problem for 1.5–2 h and got closer (0.714 with
-motion-compensated ICP refinement) but none used loop closure, and one explicitly concluded refinement was unnecessary
-after validating the poses against a map built from those same poses. Detail per trial: `FAILURE_ANALYSIS.md`, which
+recorded pose stream was "drift-free". The opus trials worked the problem for 1.5–2 h and got closer (0.705 and 0.707
+with motion-compensated ICP refinement) but none ran an incremental scan-matching front-end — they refined against maps
+built from the poses under test, so the smear was already in the target — and one explicitly concluded refinement was
+unnecessary after validating the poses against a map built from those same poses. (The reference solution's pose-graph
+back-end accepts no loop closures on this recording either; the separation comes from the front-end, not the back-end.) Detail per trial: `FAILURE_ANALYSIS.md`, which
 also contains an honest assessment of the 0.006 margin on the closest trial and of the analyzer's `near_miss` flag.
 
 ## Infrastructure failures (re-run, not counted)
