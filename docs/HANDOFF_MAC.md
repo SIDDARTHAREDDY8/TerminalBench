@@ -1,5 +1,9 @@
 # Handoff — continuing on the Mac
 
+> **Superseded work log, kept for provenance.** Written while the work was in progress; its plans, counts and
+> "remaining work" lists were overtaken by events. `RESULTS.md`, `CHECKS.md` and `docs/CALIBRATION.md` are the
+> current record.
+
 State as of 2026-09-16 (Linux dev box, disk full). Everything needed is in this repo
 (https://github.com/SIDDARTHAREDDY8/TerminalBench) plus the public dataset
 https://huggingface.co/datasets/pinkman9/aircraft-orbit-mapping (orbit.mcap, 2.92 GB).

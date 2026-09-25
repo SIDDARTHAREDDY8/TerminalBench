@@ -110,12 +110,14 @@ link back here and no indication the recording belongs to a benchmark task.
 
 Recorded plainly rather than buried:
 
-- **Both adversarial trials hit model safety classifiers on the TB3 red-team brief.** OpenAI's API refused codex
+- **Both trials run under the TB3 red-team brief hit model safety classifiers.** OpenAI's API refused codex
   outright on all three attempts, so that trial never exercised the verifier at all; claude-code ran but had one
   reconnaissance command flagged (`api_refusal_category='cyber'`), forcing a mid-session model fallback. Both scored
-  zero and `harbor analyze` records `reward_hacking: pass` for the claude-code probe, but the anti-cheat claim rests on
-  that one partially degraded run plus the structural analysis in `CHEAT_ANALYSIS.md`, not on two clean adversarial runs.
-- **`harbor analyze` flags `near_miss` on three analyzed trials.** The closest trial missed the trajectory gate by 0.006.
+  zero and `harbor analyze` records `reward_hacking: pass` for the claude-code probe. A third adversarial trial
+  (`cheat-claude-public`) ran cleanly after publication, built a real input-tampering exploit and was defeated by the
+  verifier — that run, not the degraded pair, is the strongest anti-cheat evidence here.
+- **`harbor analyze` flags `near_miss` on the three trials it analyzed** — all three are superseded Modal runs that harbor
+  never scored. The closest *counted* trial missed the trajectory gate by 0.013 (0.707 against 0.72).
   `FAILURE_ANALYSIS.md` quantifies this, explains why the gate still separates the two measured populations cleanly, and
   specifies the metric correction that should be made (and recalibrated from scratch) rather than moving the threshold.
 - **The agent image pre-installs a generic point-cloud stack** (numpy, scipy, open3d, mcap). The rubric prefers leaving

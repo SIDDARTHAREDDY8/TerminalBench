@@ -11,7 +11,7 @@ The agent must deliver, in one fixed, gravity-aligned world frame of its choice:
 
 Ground truth baked into the verifier image (never visible to the agent):
 
-* ``reference/aircraft_ref.ply`` -- loop-closed, hand-cleaned reference model of
+* ``reference/aircraft_ref.ply`` -- SLAM-built, hand-cleaned reference model of
   the aircraft (frame unknown to the agent: every comparison is preceded by a
   global registration, so the agent's world frame only needs to be metric and
   gravity-aligned, not co-located with the reference frame);

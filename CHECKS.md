@@ -95,7 +95,7 @@ Static checks re-run after every change: 22/22. A manual pass over all 35 criter
 
 The definitive run: every Docker image and layer purged first, so the 3 GB recording is re-downloaded and both images
 rebuild from nothing. Executed on the GCP `e2-standard-4` VM (4 vCPU / 16 GB — the task's declared resources) with
-harbor's `docker` backend. Script: `~/work/final_test.sh`; log and CTRF reports: `docs/runs/final-e2e-test/`.
+harbor's `docker` backend. Script: `tools/validation/final_test.sh`; log and CTRF reports: `docs/runs/final-e2e-test/`.
 
 ```
 docker system prune -af --volumes          # 0 images remain, 93 GB free
@@ -128,5 +128,7 @@ re-validated end to end on the GCP VM rather than assumed intact.
 | static checks | 22 / 22 |
 | oracle (environment image rebuilt with the renamed file) | **reward 1** — re-accumulation 0.812 / 0.996, model 0.813 / 0.992, junk 0.14, apron 0.0 % |
 
-Evidence: `docs/runs/rename-oracle/`. The 2.9 GB recording was also scanned in full for the old identifier: zero
-matches, so no frame name, schema or metadata record in the published dataset carries it.
+Evidence: `docs/runs/rename-oracle/`. The 2.9 GB recording was also scanned in full for the old identifier on the VM (a byte scan of the whole file for
+`i-trek` / `airtrek` variants) and reported zero matches, so no frame name, schema or metadata record in the published
+dataset carries it. That scan's console output was not retained; it is reproducible by downloading the bag and
+grepping it.

@@ -12,7 +12,8 @@ file that a reviewer should open.
 | 3 | difficult | pass | featureless apron, smooth fuselage, missing sensor TFs, GNSS heading × lever arm; every measured shortcut fails (`docs/CALIBRATION.md`) |
 | 4 | interesting | pass | inspection-grade aircraft models from a robot orbit are paid work at airports / MROs |
 | 5 | outcome_verified | pass | instruction states deliverables and metrics only; any SLAM / any tooling is allowed |
-| 6 | anti_cheat_robustness | pass, see note | reference model + keyframes live only in the verifier image; agent image holds bag + URDF + README. **Note:** the task's own GitHub repo is public and contains `tests/reference/*`; keep it private until submission (`CHEAT_ANALYSIS.md`) |
+| 6 | anti_cheat_robustness | pass, see note | reference model + keyframes live only in the verifier image; agent image holds bag + URDF + README. **Note:** the repository is public and contains `tests/reference/*`. That exposure is deliberate, argued in `README.md`
+("Repository visibility") and measured by the `cheat-claude-public` trial in `CHEAT_ANALYSIS.md` |
 | 7 | task_security | pass | no exfiltration, no obfuscation; the only network calls are apt/pip/rosdep in `solve.sh` and the bag download at image build |
 | 8 | functional_verification | pass | geometry metrics on parsed outputs; no string matching |
 | 9 | deterministic_reproducible | pass, see note | verifier deterministic (seeded); pip pins everywhere; apt unpinned by rule. **Note:** the oracle's SLAM is timing-sensitive (bag replay); repeated oracle runs on the CI backend are recorded in `CHECKS.md` |

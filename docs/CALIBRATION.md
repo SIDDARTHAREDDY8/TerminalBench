@@ -7,7 +7,7 @@ coverage@0.20 = fraction of reference points within 0.20 m of output; junk = fra
 ## Oracle candidates (fresh lidarslam_ros2 runs on the April orbit recording, native ROS 2 Humble)
 | run | params | play rate | keyframes / loop edges | model localprec | model coverage | junk |
 |---|---|---|---|---|---|---|
-| spike1 | handoff defaults (vg_in 0.5, vg_map 0.2) | 0.5x | 70 / 260 | 0.784 | 0.991 | 0.163 |
+| spike1 | handoff defaults (vg_in 0.5, vg_map 0.2) | 0.5x | 70 keyframes / 260 graph edges (adjacent-pose constraints; loop closures accepted: see the Docker run below, which recorded 0) | 0.784 | 0.991 | 0.163 |
 | spike2 | vg_in 0.25, vg_map 0.1 | 0.25x | — | crashed (PCL VoxelGrid index overflow) | | |
 | spike3 | vg_in 0.25, vg_map 0.15, max range 60 | 0.25x | 61 / 278 | 0.757 | 0.973 | 0.219 |
 | mentor map (auto-extract) | defaults | ? | — | 0.894–0.912 | 0.952–0.955 | 0.193 |
@@ -16,7 +16,7 @@ coverage@0.20 = fraction of reference points within 0.20 m of output; junk = fra
 ## Re-accumulation test (100 keyframes cropped to aircraft ROI, verifier-only data)
 | trajectory | stamps covered | localprec@0.10 | coverage@0.20 | junk |
 |---|---|---|---|---|
-| spike1 lidarslam (loop-closed + front-end) | 1.000 | **0.803** | 0.996 | 0.309 |
+| spike1 lidarslam (front-end + pose-graph back-end) | 1.000 | **0.803** | 0.996 | 0.309 |
 | GNSS-INS `/fixposition/odometry_enu` (URDF offset to base_link) | 1.000 | **0.684** | 0.993 | 0.315 |
 Uncropped full-scene keyframes cannot be aligned to the aircraft-only reference (junk 0.96 for both) — cropping is required.
 
@@ -44,7 +44,7 @@ Extents check dropped: robust 1–99 % extents along reference axes are ref 25.8
 GNSS 32.9/30.8/4.9 — a more complete model differs more than a smeared one; not a cleanliness signal. Junk ≤ 0.30 gates clutter.
 
 ## Thresholds chosen (confirmed by the Docker and Modal oracle repeats recorded above)
-P1 = P2 = 0.72 (oracle 0.80–0.81 on five later runs, best shortcut 0.68), C1 = C2 = 0.90 (oracle 0.99, shortcuts ≤ 0.89 on model),
+P1 = P2 = 0.72 (oracle 0.80–0.81 on five later runs, best shortcut 0.68), C1 = C2 = 0.90 (oracle 0.99, shortcuts ≤ 0.86 on model),
 junk_max = 0.30, ground ≤ 2 % within 0.15 m.
 
 ## Docker run 1 — Mac (Apple Silicon, linux/amd64 under Rosetta), 2026-09-16

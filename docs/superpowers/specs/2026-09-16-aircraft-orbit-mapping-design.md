@@ -1,5 +1,12 @@
 # aircraft-orbit-mapping — Terminal-Bench 3 task design
 
+> **Superseded design document, kept for provenance.** Written before any Docker run. Three things in it were
+> disproved by the measurements that followed and are corrected in `docs/CALIBRATION.md`, `FAILURE_ANALYSIS.md` and
+> `CHECKS.md`: the crux is the **incremental NDT scan-matching front-end**, not loop closure (every passing oracle run
+> accepts zero loop closures); the bounding-box extents check was dropped from `test_cleanliness`; and the baseline
+> figures quoted here use a superseded precision@0.20 m metric that no current threshold uses. Read the calibration
+> record for the numbers that were actually used.
+
 Date: 2026-09-16 · Author: Siddartha Reddy Chinthala · Status: approved
 
 ## Goal
@@ -39,7 +46,7 @@ Why it is hard for a good reason (all measured, see scratch/baselines):
 
 ## Verifier (separate container, `tests/`)
 Baked into the verifier image: `reference/aircraft_ref.ply` (mentor-built lidarslam map,
-hand-cleaned in CloudCompare; extents 28.9×29.0×7.8 m vs published G-V 28.5/29.4/7.9 m),
+hand-cleaned in CloudCompare; extents 28.9×29.0×7.8 m, matching the type's published dimensions to ~0.5 m),
 `reference/keyframes.npz` (~100 raw /fused_points keyframes cropped to the aircraft region,
 with stamps), thresholds.json. pytest (pytest==9.1.1, pytest-json-ctrf==0.5.2) → CTRF at
 /logs/verifier/ctrf.json; reward 1 iff every test passes else 0.

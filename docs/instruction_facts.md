@@ -3,7 +3,7 @@
 Raw material for the hand-written `tasks/aircraft-orbit-mapping/instruction.md`.
 Every bullet is a fact the instruction may state; nothing here describes a method.
 Numeric thresholds are the calibrated values in `tests/thresholds.json`
-(natively calibrated 2026-09-16; re-confirm after the Docker oracle runs). Do not name the aircraft type.
+(natively calibrated 2026-09-16, confirmed by the Docker, Modal, clean-slate and post-rename oracle runs — see `docs/CALIBRATION.md` and `CHECKS.md`). Do not name the aircraft type.
 
 ## Inputs (all absolute paths, all read-only for the agent's purposes)
 

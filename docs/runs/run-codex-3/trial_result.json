@@ -1,0 +1,127 @@
+{
+    "id": "ca705971-c16e-4c02-8f13-d8f3be21a471",
+    "task_name": "terminal-bench/aircraft-orbit-mapping",
+    "trial_name": "aircraft-orbit-mapping__PMyFNhh",
+    "trial_uri": "file:///home/siddarthareddychinthala/work/jobs/run-codex-3/aircraft-orbit-mapping__PMyFNhh",
+    "task_id": {
+        "path": "tasks/aircraft-orbit-mapping"
+    },
+    "source": null,
+    "task_checksum": "7ca633a0d8dff3df7558fdef78d625d70cea14274e4c0e0be4bd528f9756e94c",
+    "config": {
+        "task": {
+            "path": "tasks/aircraft-orbit-mapping",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "aircraft-orbit-mapping__PMyFNhh",
+        "trials_dir": "/home/siddarthareddychinthala/work/jobs/run-codex-3",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "codex",
+            "import_path": null,
+            "model_name": "openai/gpt-5.6-sol",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "reasoning_effort": "xhigh"
+            },
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "fb2dfa0e-d4aa-4934-86ac-2f8170c055c2",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "codex",
+        "version": "0.154.0",
+        "model_info": {
+            "name": "gpt-5.6-sol",
+            "provider": "openai"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 2114138,
+        "n_cache_tokens": 2045052,
+        "n_output_tokens": 32877,
+        "cost_usd": 1.8208348,
+        "model_usage": {
+            "openai/gpt-5.6-sol": {
+                "n_input_tokens": 2114138,
+                "n_cache_tokens": 2045052,
+                "n_output_tokens": 32877,
+                "cost_usd": 1.8208348
+            }
+        },
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 0.0
+        }
+    },
+    "verifier_environment_mode": "separate",
+    "exception_info": null,
+    "started_at": "2026-09-17T00:29:21.788114Z",
+    "finished_at": "2026-09-17T00:55:32.686906Z",
+    "environment_setup": {
+        "started_at": "2026-09-17T00:29:21.875308Z",
+        "finished_at": "2026-09-17T00:34:51.580201Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-09-17T00:34:51.580269Z",
+        "finished_at": "2026-09-17T00:36:03.515939Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-09-17T00:36:03.516103Z",
+        "finished_at": "2026-09-17T00:50:40.964679Z"
+    },
+    "verifier": {
+        "started_at": "2026-09-17T00:51:03.425633Z",
+        "finished_at": "2026-09-17T00:55:32.686760Z"
+    },
+    "step_results": null
+}

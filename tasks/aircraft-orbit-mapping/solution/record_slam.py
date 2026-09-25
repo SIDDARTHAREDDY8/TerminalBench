@@ -6,7 +6,7 @@ Subscribes to
   /current_pose   (geometry_msgs/PoseStamped) -- the front-end NDT pose of
                   base_link in the SLAM "map" frame, one per processed scan,
                   stamped with the scan's header stamp;
-  /modified_path  (nav_msgs/Path) -- the loop-closed keyframe poses published by
+  /modified_path  (nav_msgs/Path) -- the back-end-corrected keyframe poses published by
                   graph_based_slam after every pose-graph optimisation and after
                   the /map_save service call. Each pose keeps its keyframe stamp.
 

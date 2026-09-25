@@ -1,6 +1,7 @@
 # FAILURE_ANALYSIS — why the agents fail
 
-Each entry is written from the trial's transcript (`docs/runs/<job>/`), the verifier's per-test diagnostics (`ctrf.json`,
+Each entry is written from the trial's transcript under `docs/runs/<job>/` (for `run-claude-3`, from the agent's
+final report `final_message.md`, the only record retained for that run), the verifier's per-test diagnostics (`ctrf.json`,
 `test-stdout.txt`) and, where available, `harbor analyze`. The question for every trial is the one the TB3 reviewers ask:
 did the agent fail on the task's stated difficulty crux, or on something unrelated (specification gap, infrastructure,
 formatting)? The task's crux (`tasks/aircraft-orbit-mapping/README.md`): the GNSS-INS pose stream looks trustworthy but its
@@ -11,7 +12,7 @@ the odometry prior that the URDF sensor transforms make possible.
 
 **A correction the trials forced on this write-up.** Earlier drafts attributed the gap to pose-graph *loop closure*.
 The calibration record disproves that: every passing oracle run accepted **zero** loop closures (candidates need 100 m
-of accumulated path and the registration scores never reach the threshold) and still scored 0.805–0.813. What separates
+of accumulated path and the registration scores never reach the threshold) and still scored 0.791–0.813. What separates
 the populations is the incremental NDT front-end, not the back-end. The analysis below uses the corrected crux.
 
 ## run-codex-1 — codex / gpt-5.6-sol xhigh — reward 0 (crux failure)
@@ -35,9 +36,9 @@ shortcut the task was designed to reject.
 
 **Why the self-check fooled it.** Measuring held-out scans against a model built from the *same* poses only measures
 per-scan noise around the smeared surface; the smear itself (heading noise × lever arm, ~24 cm 1σ) is invisible to any
-check that does not have an independent reference. The agent had a public, drift-free alternative (scan-matching SLAM
-with the URDF transforms and loop closure — ROS 2 Humble and the MCAP plugin were in the image) and explicitly
-rejected it as "unstable". It also never used `/tf`, the URDF beyond the one lever-arm offset, or the wheel odometry.
+check that does not have an independent reference. The agent had a public, drift-free alternative (an incremental
+scan-matching front-end driven by the URDF transforms — ROS 2 Humble and the MCAP plugin were in the image) and
+explicitly rejected it as "unstable". It also never used `/tf`, the URDF beyond the one lever-arm offset, or the wheel odometry.
 
 **Verdict.** Genuine failure on the crux, not a near miss in the calibration sense: the gap to the gate (0.036) equals
 the gap between the shortcut population and the SLAM population, and the model test is farther off (0.659). Not a
@@ -71,7 +72,7 @@ around — the raw keyframes re-projected with the agent's own poses carry the f
 exactly the shortcut's value. Design note for hardening: the model gate's margin against model-only cleaning is thin
 (0.72 vs 0.737); the re-accumulation gate is the load-bearing one and should stay.
 
-**Verdict.** Genuine crux failure: no scan matching, no loop closure, GNSS-INS poses delivered as the trajectory.
+**Verdict.** Genuine crux failure: no incremental scan matching, GNSS-INS poses delivered as the trajectory.
 
 ## run-codex-3 — codex / gpt-5.6-sol xhigh (GCP VM, docker backend) — reward 0 (crux failure)
 
@@ -135,7 +136,7 @@ the flag. See "Threshold margin" below once all claude trials are in.
 
 ## run-claude-2 *(Modal, superseded — harbor never scored it)* — 0.689 vs the 0.72 gate
 
-**What it did (~2 h, 35 shell commands).** A different and more ambitious attack than trial 1: it wrote its own
+**What it did (2 h 21 m, 156 shell commands).** A different and more ambitious attack than trial 1: it wrote its own
 refinement stack (`core.py`, `refine.py`, `ground2.py`, `sharp.py`) and ran *six* successive rounds of pose refinement
 (`poses_c3 → c4 → c5 → c6`), each seeded from the previous and each re-estimating a **Livox extrinsic calibration**
 (`livox_calib_v3/v4.npz`) alongside the poses. It also built an unbiased "map sharpness" objective — occupied voxel
@@ -156,7 +157,7 @@ self-referential objective did not help.
 
 ## run-claude-3 — claude-code / opus-5 max (GCP VM, docker backend) — reward 0 (crux failure, self-validation gave a false negative)
 
-**What it did (~1 h 40 m).** It used the same GNSS-INS + URDF pose chain, but unlike the other two opus trials it
+**What it did (1 h 30 m).** It used the same GNSS-INS + URDF pose chain, but unlike the other two opus trials it
 explicitly *tested* whether refinement was needed — and concluded it was not. In its own words: it built a 6.1 M-point
 voxel map, ran point-to-plane ICP per scan against it, found "corrections… at **3–5 mm and ~0.01°** with zero
 systematic bias" and a median residual of 0.017 m, and concluded "the GNSS-INS poses are already ground-truth quality,
@@ -184,7 +185,7 @@ incorrect mental model of the data and then trusting artifacts it attributed to 
 
 ## run-claude-1rerun — claude-code / opus-5 max — reward 0 (counted trial; trajectory 0.705, model coverage 0.880)
 
-**What it did (2 h 12 m, 91 shell commands).** The most thorough engineering of any trial. It bypassed the ROS 2
+**What it did (2 h 07 m, 91 shell commands).** The most thorough engineering of any trial. It bypassed the ROS 2
 decoder entirely, writing its own CDR parser so the 2.9 GB recording could be read in about 20 s, then cached all 1462
 clouds — 110 M points — with a per-point time offset and sensor tag. It verified the fused cloud's internal layout
 byte-for-byte (`[72000 hesai][livox front][left][right][rear]`, no deskew applied by the fusion node), recovered
@@ -202,7 +203,7 @@ less aeroplane.
 
 ## run-claude-2rerun — claude-code / opus-5 max — reward 0 (counted trial; trajectory 0.707, model coverage 0.878)
 
-**What it did (1 h 55 m, 98 shell commands).** It diagnosed the deskewing problem more precisely than any other run:
+**What it did (1 h 20 m, 98 shell commands).** It diagnosed the deskewing problem more precisely than any other run:
 the 10 Hz GNSS attitude is too coarse to motion-compensate with, because "angular accelerations reach 240 °/s², so
 slerp between 10 Hz samples errors by up to 0.3° ≈ 8 cm at 15 m", and it therefore built a continuous-time trajectory
 at 200 Hz. Extraction dropped a 5×3 m ground vehicle parked at the nose while keeping the landing gear. It also tried a
@@ -229,31 +230,34 @@ so here is the full picture.
 
 | trajectory | local precision @ 0.10 m |
 |---|---|
-| reference solution (6 runs: 3 Modal, 2 Docker, 1 post-rename) | 0.805 – 0.813 |
+| reference solution (7 committed runs, see `CHECKS.md`) | 0.791 – 0.813 |
 | **P1 gate** | **0.72** |
 | `run-claude-1rerun` — GNSS-INS + own CDR decoder, per-point timing, motion-compensated ICP | 0.705 |
 | `run-claude-2rerun` — GNSS-INS + 200 Hz continuous-time trajectory | 0.707 |
 | `run-claude-3` — GNSS-INS, refinement judged unnecessary | 0.685 |
 | `run-codex-1/2/3` — GNSS-INS poses, no refinement | 0.684 (×3) |
 | *(superseded Modal runs, harbor never scored them: 0.714 and 0.689)* | — |
-| GNSS-INS + lightweight pose graph (author baseline) | 0.66 |
-| GNSS-INS + per-frame ICP refine (author baseline) | 0.57 |
+| GNSS-INS poses straight from the bag (author baseline) | 0.684 |
+
+Only two author trajectories were ever measured on the re-accumulation test — the reference pipeline and the raw
+GNSS-INS poses (`docs/CALIBRATION.md`). The other author baselines (per-frame ICP refine 0.57, lightweight pose graph
+0.66) are **aircraft-model** scores, not trajectory scores, and are not part of this table.
 
 Two facts matter. First, the gate separates the two populations it was built to separate: every trajectory built by
-refining the GNSS-INS poses — six counted agent trials, two superseded ones and four author baselines — lands at or
-below 0.714, and every run using an incremental scan-matching front-end lands at or above 0.805. There is no overlap.
-Second, the gate sits 0.036 above the naive baseline but 0.09 below the reference solution: it is placed nearer the
-failure population than the success population, which is why a strong refinement run can approach it.
+refining the GNSS-INS poses lands at or below **0.707** across the six counted trials (0.714 including the two
+superseded Modal runs), and every run using an incremental scan-matching front-end lands at or above **0.791**. There
+is no overlap. Second, the gate sits 0.036 above the unrefined baseline but 0.07 below the weakest reference run: it is
+placed nearer the failure population than the success population, which is why a strong refinement run can approach it.
 
 ## Is 0.705–0.714 "a substantively working solution"?
 
 Partly. That refinement is real work and real improvement: +0.02 to +0.03 over the unrefined GNSS-INS poses, roughly a third
 of the distance from the baseline to the reference. But it is not the solution the task asks for. It refines *against a map pre-built from the
 GNSS poses*, so the smear is already in the target and ICP converges into it; its own sharpness/consistency checks are
-self-referential and cannot observe the residual; and it remains 0.09 short of what the reference pipeline achieves on
+self-referential and cannot observe the residual; and it remains 0.08–0.11 short of what the reference pipeline achieves on
 the same data by registering each scan against a map assembled only from scans already placed. The
 verdict "conceptually beyond reach" is not what the numbers say — the numbers say the agent got most of the way with
-local refinement and did not do the one thing (global loop closure) that closes the rest.
+local refinement and did not do the one thing (incremental scan matching against a map built only from already-placed scans) that closes the rest.
 
 ## The real weakness the agents found — a metric artifact, not a threshold error
 

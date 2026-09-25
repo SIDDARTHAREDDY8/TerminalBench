@@ -166,7 +166,7 @@ bbox 39.8 × 40.0 × 12.9 m, z mass in 0–4 m with a tail to 8 m — an aircraf
 This only proves the data path (stamps ↔ poses ↔ frames); it is the naive baseline the verifier must reject.
 
 ## Files
-- tools (`tools/data/`): `trim_mcap.py`, `bag_stats.py`, `inspect_tf.py`, `extract_keyframes.py`, `extract_gnss_traj.py`, `gnss_accumulate.py`, this `REPORT.md`
+- tools (`tools/data/`): `trim_mcap.py`, `bag_stats.py`, `inspect_tf.py`, `extract_keyframes.py`, `extract_gnss_traj.py`, `gnss_accumulate.py`, `crop_keyframes.py`; this report is `docs/DATA_TOOLING_REPORT.md`
 - data (`scratch/data/`, 107 MB): `orbit_slice5s.mcap` 83.0 MB, `keyframes.npz` 13.6 MB, `gnss_accum.ply` 15.4 MB, `gnss_enu.tum` 148 KB,
   `bag_stats.txt`, `tf_pairs.md`, `gnss_report.txt`, `keyframes_report.txt`, `accum_report.txt`
-Nothing committed (scratch/ is gitignored; the project dir is not a git repo).
+`scratch/` and `jobs/` are gitignored; the run evidence referenced elsewhere in this repository is committed under `docs/runs/`.

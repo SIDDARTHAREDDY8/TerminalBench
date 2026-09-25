@@ -15,9 +15,9 @@
 #      recorder for /current_pose and /modified_path
 #   4. play /app/data/orbit.mcap with --clock at PLAY_RATE (SLAM must keep up)
 #   5. call /map_save -> map.pcd + pose_graph.g2o + a final /modified_path
-#   6. compose the per-scan base_link trajectory (loop-closed keyframes +
+#   6. compose the per-scan base_link trajectory (back-end-corrected keyframes +
 #      corrected front-end odometry)          -> /app/trajectory.tum
-#   7. cut the aircraft out of the loop-closed map (ground RANSAC + DBSCAN
+#   7. cut the aircraft out of the back-end-corrected map (ground RANSAC + DBSCAN
 #      cluster nearest the orbit centre)      -> /app/aircraft.ply
 #
 # Everything is computed at run time; nothing is precomputed.

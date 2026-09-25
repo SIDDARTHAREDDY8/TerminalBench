@@ -5,7 +5,7 @@
 Inputs
   --bag        the recording; only the /fused_points header stamps are read
   --frontend   frontend_poses.json  (record_slam.py): per-scan NDT poses T_f(t)
-  --keyframes  keyframes.json       (record_slam.py): loop-closed keyframe poses
+  --keyframes  keyframes.json       (record_slam.py): back-end-corrected keyframe poses
                T_l(k) from the final /modified_path
 
 Method
